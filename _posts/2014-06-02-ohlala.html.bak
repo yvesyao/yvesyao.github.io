@@ -1,7 +1,0 @@
----
-layout: default
-title: Bonjour tout le monde!
----
-	<h2>{{ page.title }}</h2>
-	<p>Myfirst page</p>
-	<p>{{ page.date | date_to_string }}</p>
