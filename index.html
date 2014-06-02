@@ -26,7 +26,7 @@ title: 姚某人的Blog
 	<div id="content" class="clearfix">
 		<ul class="blackBG">
 	　　　　{% for post in site.posts %}
-	　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+	　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}" target="_blank">{{ post.title }}</a></li>
 	　　　　{% endfor %}
 	　　</ul>
 	</div>
