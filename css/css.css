@@ -1,0 +1,255 @@
+body {
+  font-family: arial;
+  background: #ddd;
+}
+/* bubble */
+.bubble {
+  visibility: hidden;
+  position: absolute;
+  clear: both;
+  background: #fff;
+  padding: 20px 10px;
+  border: 5px solid #E7B550;
+  border-radius: 20px;
+  box-shadow: 0 0 15px #999;
+  margin: 15px;
+}
+.relative {
+  position: relative;
+}
+.bubble:before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: -13px;
+  top: 53px;
+  border: 15px solid;
+  border-color: #e7b550 transparent transparent #e7b550;
+  transform-origin: 50% 50%;
+  transform:rotate(30deg);
+  -webkit-transform: rotate(30deg); /* Safari and Chrome */
+  -webkit-transform-origin:50% 50%; /* Safari and Chrome */
+}
+
+.bubble:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  left: -6px;
+  top: 51px;
+  border: 11px solid;
+  border-color: #fff transparent transparent #fff;
+  transform-origin: 50% 50%;
+  transform:rotate(30deg);
+  -webkit-transform: rotate(30deg); /* Safari and Chrome */
+  -webkit-transform-origin:50% 50%; /* Safari and Chrome */
+}
+
+#content ul{
+  list-style: none;
+}
+
+#content li a {
+  line-height: 30px;
+  font-size: 1.2em;
+  text-shadow: 1px 1px 1px #555;
+  color: #fff;
+}
+
+#content li a:hover {
+  color: #4dfe88;
+}
+
+/* menu */
+/* common */
+.pullLeft {
+  float: left;
+}
+.pullRight {
+  float: right;
+}
+.clear {
+  clear: both;
+  width: 0;
+  height: 0;
+  padding: 0 !important;
+  margin: 0 !important
+}
+.clearfix {
+  *zoom: 1;
+}
+.clearfix:before, .clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.inline {
+  display: inline;
+}
+.colorGray {
+  color: #bbb;
+}
+.pl80{
+  padding-left: 80px;
+}
+.pt10{
+  padding-top: 10px;
+}
+ul,
+li {
+  padding: 0;
+  margin: 0;
+}
+a {
+  text-decoration: none;
+}
+/* specific */
+.icon {
+  width: 40px;
+  height: 40px;
+}
+.footerBtn {
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  padding: 10px 15px;
+}
+.footerBtn:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+.footerBtn:hover a {
+  color: #fff;
+}
+.footerBtn:hover .dropUpMenu {
+  display: block;
+}
+
+#footerMenu {
+  height: 40px;
+  width: 100%;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 16px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.3), inset 0 10px rgba(255, 255, 255, 0.2), inset 0 10px 20px rgba(255, 255, 255, 0.2), inset 0 -15px 30px rgba(0, 0, 0, 0.3);
+}
+#footerMenu a {
+  display: block;
+  color: #ccc;
+}
+#footerMenu a:hover {
+  color: #fff;
+}
+#footerMenu li {
+  list-style: none;
+}
+#footerMenu img {
+  border: none;
+}
+.leftMenu li {
+  border-left: none;
+  float: left;
+}
+.leftMenu li:first-child img {
+  margin-top: -10px;
+  width: 40px;
+  height: 40px;
+  opacity: 0.8;
+  -moz-opacity: 0.8;
+  filter: alpha(opacity=80); /* 针对 IE8 以及更早的版本 */
+}
+.leftMenu li:first-child:hover img {
+  opacity: 1;
+  -moz-opacity: 1;
+  filter: alpha(opacity=100); /* 针对 IE8 以及更早的版本 */
+}
+.iconMenu {
+  padding: 0 10px;
+  margin-right: 10px;
+}
+.iconMenu li {
+  float: left;
+  margin: 0 5px;
+}
+.iconMenu li img {
+  width: 40px;
+  height: 40px;
+}
+.iconMenu li:hover img {
+  margin: -1px 0 0 -1px;
+}
+.iconMenu li:hover .dropUpMenu {
+  display: block;
+}
+.logout {
+  border-right: none;
+}
+
+.dropUpMenu {
+  -webkit-border-radius: 7px 7px 0 0;
+  -moz-border-radius: 7px 7px 0 0;
+  -ms-border-radius: 7px 7px 0 0;
+  -o-border-radius: 7px 7px 0 0;
+  border-radius: 7px 7px 0 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
+  display: none;
+  width: 140px;
+  position: absolute;
+  bottom: 40px;
+  margin-left: -15px;
+  padding: 0;
+}
+ul.dropUpMenu li {
+  line-height: 32px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  margin: 0 10px;
+  float: none;
+}
+.col1 {
+  width: 140px;
+}
+.col2 {
+  width: 290px;
+}
+.col3 {
+  width: 440px;
+}
+.footerBtn .dropUpMenu {
+  padding: 10px;
+}
+.col3Menu {
+  width: 456px;
+}
+.col2Menu {
+  width: 304px;
+}
+.col1Menu {
+  width: 152px;
+}
+.col1, .col2, .col3 {
+  padding: 5px;
+  display: block;
+  float: left;
+  color: #fff;
+  text-align: justify;
+  text-justify: inter-word; 
+}
+.blackBG{
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 5px;
+}
+#footerMenu img.protraitSmall {
+  border: 1px solid #fff;
+  width: 70px;
+  height: 70px;
+}
