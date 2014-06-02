@@ -24,7 +24,7 @@ title: 姚某人的Blog
 	<div class="bubble">Laoshi V5 Laoshi V5 Laoshi V5 Laoshi V5</div>
 	<h2>{{ page.title }}</h2>
 	<div id="content" class="clearfix">
-		<ul class="blackBG">
+		<ul class="blackBG list-unstyled">
 	　　　　{% for post in site.posts %}
 	　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
 	　　　　{% endfor %}

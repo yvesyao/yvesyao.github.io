@@ -47,10 +47,6 @@ body {
   -webkit-transform-origin:50% 50%; /* Safari and Chrome */
 }
 
-#content ul{
-  list-style: none;
-}
-
 #content li a {
   line-height: 30px;
   font-size: 1.2em;
