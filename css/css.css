@@ -1,6 +1,26 @@
 body {
   font-family: arial;
-  background: #ddd;
+  background: #ccc;
+}
+.set-middle {
+  margin: 0 auto;
+  float: none;
+  clear: both;
+}
+.pt {
+  padding-top: 1em;
+}
+.box {
+  margin: 1em;
+  padding: 1em;
+  border: gray 1px solid;
+  border-radius: 7px;
+}
+hr {
+  border-bottom: #ddd 1px solid;
+}
+.gray-border {
+  border: gray 1px solid;
 }
 /* bubble */
 .bubble {
@@ -45,6 +65,20 @@ body {
   transform:rotate(30deg);
   -webkit-transform: rotate(30deg); /* Safari and Chrome */
   -webkit-transform-origin:50% 50%; /* Safari and Chrome */
+}
+
+header {
+  padding: 20px 0;
+  color: #fff;
+}
+
+footer {
+  height: 100px;
+}
+
+#content {
+  background: #fff;
+  margin-bottom: 30px;
 }
 
 #content li a {
