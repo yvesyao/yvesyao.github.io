@@ -1,0 +1,48 @@
+/* configs */
+/* header footer */
+.tag {
+  background-color: #f42432;
+}
+.title.second-title {
+  color: #f42432;
+}
+.title.third-title {
+  color: #f42432;
+}
+/* frame */
+header {
+  background-color: #ffffff;
+  border-bottom: #f42432 solid 4px;
+}
+header .portrait img {
+  border: 4px solid #f42432;
+}
+header .title.first-title {
+  color: #000000;
+}
+#content #skills tr .score .item {
+  color: #f42432;
+}
+#content #skills tr .score .item:before {
+  font-family: FontAwesome;
+}
+/* /#content */
+.box-content {
+  /* /.box-content */
+}
+.box-content .block {
+  /* /.block */
+}
+.box-content .block li:before,
+.box-content .block dt:before {
+  color: #f42432;
+}
+/* /.box */
+footer {
+  background-color: #ffffff;
+  border-top: #f42432 solid 4px;
+}
+footer .box .box-header .title.first-title {
+  color: #000000;
+  background-color: #ffffff;
+}

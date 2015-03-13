@@ -1,0 +1,72 @@
+@import url("prefixer.less");
+/* configs */
+/* header footer */
+@hfBg: #fff;
+@hfFirstTitleColor: #000;
+@mainColor: #f42432;
+
+.tag {
+  background-color: @mainColor;
+}
+.title {
+  &.second-title {
+    color: @mainColor;
+  }
+  &.third-title {
+    color: @mainColor;
+  }
+}
+
+.strong {
+}
+
+/* frame */
+header {
+  background-color: @hfBg;
+  border-bottom: @mainColor solid 4px;
+  .portrait {
+    img {
+      border: 4px solid @mainColor;
+    }
+  }
+  .title.first-title {
+    color: @hfFirstTitleColor;
+  }
+}
+#content {
+  #skills {
+    tr {
+      .score {
+        .item {
+          color: @mainColor;
+          &:before {
+            font-family: FontAwesome;
+          }
+        }
+      }
+    }
+  }
+}
+/* /#content */
+
+.box-content {
+  .block {
+    li, dt {
+      &:before {
+        color: @mainColor;
+      }
+    }
+    /* /.block */
+  }
+  /* /.box-content */
+}
+/* /.box */
+
+footer {
+  background-color: @hfBg;
+  border-top: @mainColor solid 4px;
+  .box .box-header .title.first-title {
+    color: @hfFirstTitleColor;
+    background-color: @hfBg;
+  }
+}
