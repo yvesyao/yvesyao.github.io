@@ -1,0 +1,175 @@
+@import url("../plugins/bootstrap/bootstrap.min.css");
+@import url("http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.min.css");
+/* configs */
+/* header footer */
+body {
+  font-family: arial;
+  color: #777777;
+  font: 14px/1.5 tahoma, arial, 'Hiragino Sans GB', 'SimHei', '黑体', sans-serif;
+}
+img {
+  width: 100%;
+}
+p,
+ul,
+dl,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* common */
+@media (min-width: 1200px) {
+  .container {
+    width: 970px;
+  }
+}
+.fa {
+  /* padding-top: 1px; */
+  /* font: 14px/1.5 FontAwesome; */
+}
+.tag {
+  display: inline-block;
+  color: #fff;
+  text-align: center;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  background-clip: padding-box;
+  height: 1.5em;
+  width: 1.5em;
+  line-height: 1.5em;
+  font-size: 1em;
+}
+.title {
+  font-family: 'Microsoft Yahei', '微软雅黑';
+  font-weight: bold;
+}
+.title.first-title {
+  font-size: 1.8em;
+  color: #000;
+}
+.title.second-title {
+  font-size: 1.2em;
+}
+.strong {
+  color: #000000;
+}
+/* frame */
+header {
+  padding: 2em;
+}
+header .portrait img {
+  max-width: 100px;
+}
+header .head-label {
+  padding-top: 1em;
+  line-height: 1.5em;
+}
+header .basic-label {
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+header .basic-label:first-of-type {
+  padding-top: 4em;
+}
+#content {
+  padding: 2em 0;
+  background-color: #ffffff;
+}
+#content #skills tr {
+  line-height: 2em;
+}
+#content #skills tr th {
+  padding-right: 1em;
+  width: 6em;
+}
+#content #skills tr .score .item {
+  margin-right: 0.5em;
+}
+#content #skills tr .score .item:before {
+  font-family: FontAwesome;
+  font-size: 1em;
+  content: "\f10c";
+}
+#content #skills tr .score .item.active:before {
+  content: "\f111";
+}
+/* /#content */
+.box {
+  margin-bottom: 2em;
+  /* /.box-content */
+}
+.box .box-header .title {
+  background-color: #ffffff;
+  float: left;
+  padding-right: 0.5em;
+}
+.box .box-header .gray-line {
+  height: 1em;
+  margin-top: 0.85em;
+  background-color: rgba(155, 155, 155, 0.2);
+}
+.box .box-content {
+  /* /.block */
+}
+.box .box-content .block {
+  margin: 1em 0;
+  /* /.duration */
+}
+.box .box-content .block .duration {
+  float: left;
+  width: 5em;
+  /*  font-size: 1.2em;*/
+  font-weight: bold;
+  text-align: center;
+}
+.box .box-content .block .duration .divider:before {
+  content: "|";
+}
+.box .box-content .block .list-label:before {
+  content: "\f1ce";
+  padding-right: 0.5em;
+  font-size: 0.8em;
+  font-family: FontAwesome;
+}
+.box .box-content .block .content .job {
+  color: #000000;
+  line-height: 2em;
+}
+.box .box-content .block .content .third-title {
+  margin-top: 0.5em;
+}
+.box .box-content .block .content ul li {
+  color: #000000;
+  line-height: 1.5em;
+}
+.box .box-content .block .content ul li:before {
+  content: "\f1ce";
+  padding-right: 0.5em;
+  font-size: 0.8em;
+  font-family: FontAwesome;
+}
+.box .box-content .block .content dl {
+  line-height: 1.5em;
+}
+.box .box-content .block .content dl dt {
+  font-weight: normal;
+}
+.box .box-content .block .content dl dt:before {
+  content: "\f1ce";
+  padding-right: 0.5em;
+  font-size: 0.8em;
+  font-family: FontAwesome;
+}
+.box .box-content .block .content dl dd {
+  color: #000000;
+  margin-bottom: 0.5em;
+}
+/* /.box */
+footer {
+  padding: 2em 0;
+}
+footer #profile li:before {
+  content: '· ';
+  font-weight: bold;
+}

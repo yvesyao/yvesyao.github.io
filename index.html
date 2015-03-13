@@ -1,74 +1,438 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+<!doctype html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+	<title>Yves Yao's resume</title>
+	<link rel="stylesheet" type="text/css" href="./css/common.css">
+	<link rel="stylesheet" id="themeCss" type="text/css" href="./css/css-lr.css">
+	<!--[if lt IE 9]><script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script><script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script><![endif]-->
+</head>
+<body>
+	<div id="top">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-md-6 pull-right">
+					<label for="" class="control-label col-xs-4 text-right">Theme: </label>
+					<div class="col-xs-8">
+						<select id="theme" class="theme">
+							<option value="lr">Light Red</option>
+							<option value="dr">Dark Red</option>
+							<option value="lg">Light Green</option>
+							<option value="dg">Dark Green</option>
+							<option value="lb">Light Blue</option>
+							<option value="db">Dark Blue</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<header>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-6 col-sm-4">
+					<div class="clearfix portrait text-center"><img src="./imgs/portrait.jpg" alt="portrait" class="img-circle"></div>
+					<p class="title first-title text-center">
+						姚亦韬
+					</p>
+					<p class="title second-title text-center">
+						Web前端开发工程师
+					</p>
+				</div>
+				<div class="col-xs-6 col-sm-4">
+					<div class="col-xs-12 basic-label">
+						<span class="labels">男 • 1992-10-5 • 山西</span>
+					</div>
+					<div class="col-xs-12 basic-label">
+						<span class="labels">CET6</span>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<div class="col-xs-6 col-sm-12 head-label">
+						<i class="tag fa fa-phone"></i>
+						<span class="labels">15111332669</span>
+					</div>
+					<div class="col-xs-6 col-sm-12 head-label">
+						<i class="tag fa fa-envelope"></i>
+						<span class="labels">yyt182@qq.com</span>
+					</div>
+					<div class="col-xs-12 head-label">
+						<i class="tag fa fa-github-alt"></i>
+						<span class="labels">https://github.com/yyt182</span>
+					</div>
+					<div class="col-xs-12 head-label">
+						<i class="tag fa fa-home"></i>
+						<span class="labels">湖南省长沙市中南大学铁道学院 410000</span>
+					</div>
+				</div>
+			</div>
+			<!-- /.row -->
+		</div>
+		<!-- /.container -->
+	</header>
+	<div id="content">
+		<div class="container">
+			<div class="col-xs-12 col-md-6">
+				<div class="box" id="education">
+					<div class="box-header clearfix">
+						<div class="title first-title">
+							<i class="tag fa fa-mortar-board"></i>
+							<span class="labels">教育经历</span>
+						</div>
+						<div class="gray-line"></div>
+					</div>
+					<div class="box-content">
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2013.9</div>
+								<div class="divider"></div>
+								<div class="end">至今</div>
+							</div>
+							<div class="content">
+								<div class="title second-title">中南大学</div>
+								<p class="normal">硕士 · 软件工程</p>
+							</div>
+						</div>
+						<!-- /.block -->
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2009.9</div>
+								<div class="divider"></div>
+								<div class="end">2013.7</div>
+							</div>
+							<div class="content">
+								<div class="title second-title">中南大学</div>
+								<p class="normal">本科 · 软件工程</p>
+							</div>
+						</div>
+						<!-- /.block -->
+					</div>
+					<!-- /.box-content -->
+				</div>
+				<!-- /.box -->
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+				<div class="box" id="skills">
+					<div class="box-header clearfix">
+						<div class="title first-title">
+							<i class="tag fa fa-pie-chart"></i>
+							<span class="labels">技能清单</span>
+						</div>
+						<div class="gray-line"></div>
+					</div>
+					<div class="box-content">
+						<div class="block clearfix">
+							<div class="content">
+								<div class="title second-title">Web开发</div>
+								<table>
+									<tr>
+										<th>HTML</th>
+										<td class="skill-level">4</td>
+									</tr>
+									<tr>
+										<th>CSS/CSS3</th>
+										<td class="skill-level">4</td>
+									</tr>
+									<tr>
+										<th>Jquery</th>
+										<td class="skill-level">4</td>
+									</tr>
+									<tr>
+										<th>javascript</th>
+										<td class="skill-level">3</td>
+									</tr>
+									<tr>
+										<th>PHP</th>
+										<td class="skill-level">1</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<!-- /.block -->
 
-    <title>Yyt182.github.io by yyt182</title>
-  </head>
-
-  <body>
-    <header>
-      <div class="inner">
-        <h1>Yyt182.github.io</h1>
-        <h2></h2>
-        <a href="https://github.com/yyt182" class="button"><small>Follow me on</small>GitHub</a>
-      </div>
-    </header>
-
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <aside id="sidebar">
+						<div class="block clearfix">
+							<div class="content">
+								<div class="title second-title">前端框架</div>
+								<table>
+									<tr>
+										<th>Bootstrap</th>
+										<td class="skill-level">4</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<!-- /.block -->
+						<div class="block clearfix">
+							<div class="content">
+								<div class="title second-title">前端工具</div>
+								<table>
+									<tr>
+										<th>Less</th>
+										<td class="skill-level">4</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<!-- /.block -->
 
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+						<div class="block clearfix">
+							<div class="content">
+								<div class="title second-title">其他</div>
+								<table>
+									<tr>
+										<th>数据库</th>
+										<td class="skill-level">4</td>
+									</tr>
+									<tr>
+										<th>Git</th>
+										<td class="skill-level">3</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+						<!-- /.block -->
 
-  
-  </body>
+					</div>
+					<!-- /.box-content -->
+				</div>
+				<!-- /.box -->
+
+				<div class="box" id="honor">
+					<div class="box-header clearfix">
+						<div class="title first-title">
+							<i class="tag fa fa-trophy"></i>
+							<span class="labels">荣誉与奖励</span>
+						</div>
+						<div class="gray-line"></div>
+					</div>
+					<div class="box-content">
+						<div class="block clearfix">
+							<ul>
+								<li>国家一等奖学金2次，三等奖学金1次</li>
+								<li>2011年校级ACM比赛三等奖</li>
+								<li>2012年蔡田碹珠校级奖励金（全校10名本科生）</li>
+								<li>2011年度中南大学软件学院通人奖学金（全院10名学生）</li>
+								<li>2011年度专项奖学金（全院4名学生）</li>
+								<li>2013年中南大学优秀学生</li>
+								<li>2012年中南大学优秀共青团干</li>
+								<li>2011年中南大学优秀共青团员</li>
+								<li>2011年度中南大学优秀学生</li>
+								<li>2010年度中南大学优秀学生</li>
+								<li>2010年度中南大学软件学院优秀学生干部</li>
+							</ul>
+						</div>
+						<!-- /.block -->
+					</div>
+					<!-- /.box-content -->
+				</div>
+				<!-- /.box -->
+
+				<div class="box" id="jobs">
+					<div class="box-header clearfix">
+						<div class="title first-title">
+							<i class="tag fa fa-bookmark"></i>
+							<span class="labels">校内职务</span>
+						</div>
+						<div class="gray-line"></div>
+					</div>
+					<div class="box-content">
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2011.9</div>
+								<div class="divider"></div>
+								<div class="end">2012.7</div>
+							</div>
+							<div class="content">
+								<p class="strong">院学生会 · 副主席</p>
+							</div>
+						</div>
+						<!-- /.block -->
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2011.3</div>
+								<div class="divider"></div>
+								<div class="end">2011.7</div>
+							</div>
+							<div class="content">
+								<p class="strong">院学生会 · 学科部部长</p>
+								<p class="strong">院科协 · 主席助理</p>
+							</div>
+						</div>
+						<!-- /.block -->
+					</div>
+					<!-- /.box-content -->
+				</div>
+				<!-- /.box -->
+
+			</div>
+			<!-- /.col-xs-12.col-md-6 -->
+
+			<div class="col-xs-12 col-md-6">
+				<div class="box" id="projects">
+					<div class="box-header clearfix">
+						<div class="title first-title">
+							<i class="tag fa fa-code"></i>
+							<span class="labels">项目经验</span>
+						</div>
+						<div class="gray-line"></div>
+					</div>
+					<div class="box-content">
+
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2014.3</div>
+								<div class="divider"></div>
+								<div class="end">2014.7</div>
+							</div>
+							<div class="content">
+								<div class="title second-title">湘雅医院临床技能训练中心(已上线测试)</div>
+								<p class="job">Demo制作；前端开发；编写部分底层模块。</p>
+								<p class="normal">本项目为湘雅医院训练中心的管理和门户网站，主要功能有中心内部管理、教育教学管理、中心课程展示、报名事宜等。</p>
+								<p class="title third-title">前端之路</p>
+								<ul>
+									<li>初次接触Bootstrap2框架和响应式布局；</li>
+									<li>接触并深入学习css3、jquery；</li>
+									<li>开始借助插件的document来解决插件使用的问题；</li>
+									<li>学习了ajax无刷新跳转。</li>
+								</ul>
+								<p class="title third-title">主要问题及解决办法</p>
+								<dl>
+									<dt>ajax无刷新跳转时无法前进和后退。</dt>
+									<dd>采用ajax+pushstate的方式解决。</dd>
+									<dt>bootstrap2中模态框受浏览器高度限制。</dt>
+									<dd>移植了bootstrap3模态框的结构，不再需要固定高度。</dd>
+								</dl>
+							</div>
+						</div>
+						<!-- /.block -->
+
+
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2014.5</div>
+								<div class="divider"></div>
+								<div class="end">至今</div>
+							</div>
+							<div class="content">
+								<div class="title second-title">中南大学恶性肿瘤PET-CT诊断数据库</div>
+								<p class="job">Demo制作；前端开发；数据库设计。</p>
+								<p class="normal">本项目为湘雅大数据工程的子项目之一，计划开发时间5年，第一阶段的任务是构建知识库，基本功能有本院病人的病历、病理信息和恶性肿瘤数据的抓取、录入、维护、检索和分析等。</p>
+								<p class="title third-title">前端之路</p>
+								<ul>
+									<li>不再依赖网站模板，全面利用bootstrap3构建页面框架；</li>
+									<li>开始尝试从代码重用及重构等方面优化js代码。</li>
+								</ul>
+								<p class="title third-title">主要问题及解决办法</p>
+								<dl>
+									<dt>项目要求字段、选项以及模块等可以随意添加。</dt>
+									<dd>以配置文件的方式保存字段信息，并编写了通用的模板引擎。</dd>
+								</dl>
+							</div>
+						</div>
+						<!-- /.block -->
+
+						<div class="block clearfix">
+							<div class="duration">
+								<div class="start">2014.11</div>
+								<div class="divider"></div>
+								<div class="end">至今</div>
+							</div>
+							<div class="content">
+								<div class="title second-title">BYone V2.0网站</div>
+								<p class="job">前端开发。</p>
+								<p class="normal">本项目为佰驿互联公司的外包项目，主要用于公司的资产管理、网络拓扑管理、云管理、知识库配置(检测规则库)、安全告警以及大数据分析等工作。</p>
+								<p class="title third-title">前端之路</p>
+								<ul>
+									<li>意识到自己过分依赖jquery，而js才是根本，开始系统学习js；</li>
+									<li>尝试编写了适用于项目需求的jquery表格插件；</li>
+									<li>使用LESS提高样式文件的可维护性和可重用性；</li>
+									<li>有意关注网页性能优化，如减少 HTTP 的请求数，推迟数据的加载等。</li>
+								</ul>
+								<p class="title third-title">主要问题及解决办法</p>
+								<dl>
+									<dt>仪表盘界面图表很多，影响加载速度。</dt>
+									<dd>先加载页面和图表基本信息，再分别异步请求并填充各个图表的数据。</dd>
+									<dt>项目中规则库类似于sql语句组装，灵活性高，逻辑复杂，而且有一部分其他页面也会用到。</dt>
+									<dd>使用面向对象的方式处理结构和逻辑，并尽量做到表现与数据分离。</dd>
+									<dt>项目较大，网页、css和js代码难以维护。</dt>
+									<dd>利用Less预编译css；规范变量命名，编写规范化注释。</dd>
+								</dl>
+							</div>
+						</div>
+						<!-- /.block -->
+
+					</div>
+					<!-- /.box-content -->
+				</div>
+				<!-- /.box -->
+
+			</div>
+			<!-- /.col-xs-12.col-md-6 -->
+
+		</div>
+		<!-- /.container -->
+	</div>
+	<!-- /#content -->
+	<footer>
+		<div class="container">
+			<div class="box" id="profile">
+				<div class="box-header clearfix">
+					<div class="title first-title">
+						<i class="tag fa fa-user"></i>
+						<span class="labels">自我描述</span>
+					</div>
+					<div class="gray-line"></div>
+				</div>
+				<div class="box-content">
+					<div class="block clearfix">
+						<ul>
+							<li class="col-xs-12 col-md-6">热爱web前端，迷恋优秀的开源代码。</li>
+							<li class="col-xs-12 col-md-6">些许的完美主义和强迫症，我为最刁钻的网页用户代言。</li>
+							<li class="col-xs-12 col-md-6">乐于接受别人的建议，喜欢头脑风暴。</li>
+							<li class="col-xs-12 col-md-6">讨厌被称为设计师，因为骨子里还是个十足的程序员。</li>
+							<li class="col-xs-12 col-md-6">乐于接受新事物、新技术，喜欢把新东西运用到自己的作品中。</li>
+							<li class="col-xs-12 col-md-6">爱音乐<i class="fa fa-headphones"></i>，爱三国杀。</li>
+						</ul>
+
+					</div>
+					<!-- /.block -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.box -->
+		</div>
+	</footer>
+	<!-- scripts here -->
+	<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+	<!-- <script src="./js/jquery-1.10.2.min.js"></script> -->
+	<script src="./plugins/bootstrap/bootstrap.min.js"></script>
+	<!-- external scripts -->
+
+	<script type="text/javascript">
+		window.$ && $(function() {
+			var $scoreTemplate = $('<span class="score"></span>'),
+			$itemTemplate = $('<span class="item"></span>');
+			$('#skills .skill-level').each(function(index, el) {
+				var _total = 5,
+				_score = $(this).text() || 0 + 0;
+				$(this).text('');
+				var $score = $scoreTemplate.clone().appendTo(this);
+				while (_total-- > 0) {
+					if(_score-- > 0) {
+						$itemTemplate.clone().addClass('active').appendTo($score);
+					} else {
+						$itemTemplate.clone().appendTo($score);
+					}
+				}
+			});
+
+			$('#theme').change(function(event) {
+				/* Act on the event */
+				$('#themeCss').attr('href', './css/css-' + $(this).val() + '.css');
+			});
+		})
+	</script>
+</body>
 </html>
