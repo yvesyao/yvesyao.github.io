@@ -17,7 +17,7 @@ function update(){
  $('playStatus').textContent=completed?'一起说晚安':playing?'正在演示':reduced?'轻动模式':'准备好就开始';
  $('timeLabel').textContent=`第 ${current+1} 步，共 ${lesson.length} 步`;
  $('nextButton').disabled=current===lesson.length-1;
- $('motionButton').textContent=reduced?'轻动：开':'轻动模式';$('motionButton').setAttribute('aria-pressed',String(reduced));
+ $('motionButton').textContent=reduced?'轻动：开':'轻动：关';$('motionButton').setAttribute('aria-pressed',String(reduced));
  $('stepSummary').textContent=`${item.title}。${item.hint}`;
 }
 function selectStep(i){current=Math.max(0,Math.min(lesson.length-1,i));elapsed=0;completed=false;playing=!reduced&&!!renderer;stopSpeech();update();if(playing)speak();}
@@ -28,7 +28,7 @@ $('replayButton').onclick=()=>{elapsed=0;completed=false;playing=!!renderer;spea
 $('nextButton').onclick=()=>selectStep(current+1);
 $('autoplay').onchange=e=>autoplay=e.target.checked;
 $('seek').oninput=e=>{elapsed=lesson[current].duration*Number(e.target.value)/100;playing=false;completed=false;stopSpeech();update();};
-function setMotion(value){reduced=value;playing=false;stopSpeech();update();}
+function setMotion(value){reduced=value;update();}
 $('motionButton').onclick=()=>setMotion(!reduced);media.addEventListener('change',e=>setMotion(e.matches));
 $('voiceButton').onclick=()=>{voice=!voice;$('voiceButton').textContent=`朗读：${voice?'开':'关'}`;$('voiceButton').setAttribute('aria-pressed',String(voice));if(voice)speak();else stopSpeech();};
 if(!('speechSynthesis' in window)){$('voiceButton').disabled=true;$('voiceButton').textContent='设备不支持朗读';}
