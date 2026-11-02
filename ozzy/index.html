@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ozzy 和 Teddy 的彩色成长绘本。在线翻阅四个版本，阅读中英双语故事，下载完整 PDF。">
+  <meta name="theme-color" content="#f7f5ed">
+  <title>Ozzy 的绘本小书架</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./reader.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#reader">跳到绘本</a>
+  <header class="site-header">
+    <a class="wordmark" href="./">Ozzy <span>&amp; Teddy</span></a>
+    <a class="home-link" href="../">回到目录 <span aria-hidden="true">↗</span></a>
+  </header>
+  <main>
+    <section class="introduction" aria-labelledby="book-title">
+      <div>
+        <p class="eyebrow">成长绘本 / LITTLE EVERYDAY STORIES</p>
+        <h1 id="book-title">Ozzy 学上厕所</h1>
+        <p class="english-title" id="english-title" lang="en">Ozzy Learns to Use the Potty</p>
+      </div>
+      <div class="download-area">
+        <a class="download" id="download" href="./downloads/ozzy-potty-v4.pdf" download>下载完整 PDF <span aria-hidden="true">↓</span></a>
+        <p id="book-meta">中英双语 · 11 页 · 24.3 MB</p>
+      </div>
+    </section>
+    <section class="edition-section" aria-labelledby="edition-label">
+      <div class="edition-heading"><h2 id="edition-label">挑一个版本，一起读</h2><span>切换版本时，停留在同一页</span></div>
+      <div class="version-list" id="versions" aria-label="绘本版本"></div>
+      <p class="edition-description" id="edition-description">短句、对话和重复节奏，适合亲子共读。</p>
+    </section>
+    <section class="reader" id="reader" aria-label="绘本阅读器">
+      <p class="message" id="message" role="alert" hidden></p>
+      <figure class="book-page">
+        <a id="page-link" class="paper" href="./assets/v4/page-00.webp" target="_blank" rel="noopener" aria-label="打开封面大图">
+          <img id="page-image" src="./assets/v4/page-00.webp" alt="封面。Ozzy 学上厕所。Ozzy Learns to Use the Potty." width="1224" height="1224" fetchpriority="high">
+        </a>
+        <figcaption>点按页面查看大图</figcaption>
+      </figure>
+      <nav class="pager" aria-label="翻页">
+        <button id="previous" type="button" disabled><span aria-hidden="true">←</span> 上一页</button>
+        <p id="page-status" role="status" aria-live="polite" aria-atomic="true">封面 · 1 / 11</p>
+        <button id="next" type="button" disabled>下一页 <span aria-hidden="true">→</span></button>
+      </nav>
+      <nav class="page-jumps" id="page-jumps" aria-label="跳到指定页"></nav>
+      <p class="keyboard-hint">也可以用键盘 ← → 翻页</p>
+      <noscript><p>启用 JavaScript 即可翻页和切换版本，也可以直接下载上方的完整绘本。</p></noscript>
+    </section>
+  </main>
+  <footer><span>Ozzy &amp; Teddy</span><p>一点一点，慢慢长大。</p></footer>
+</body>
+</html>
