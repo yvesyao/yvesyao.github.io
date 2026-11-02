@@ -23,16 +23,6 @@ h1{font-size:clamp(30px,4vw,43px);line-height:1.2;letter-spacing:-1.6px;margin:0
 .download{display:inline-flex;gap:20px;align-items:center;justify-content:center;background:var(--olive);color:#fff;padding:13px 20px;border-radius:6px;font-size:14px;font-weight:600;min-height:48px}
 .download:hover{background:#34452a}
 .download-area p{color:var(--muted);font-size:11px;margin:9px 0 0}
-.edition-section{padding-top:6px}
-.edition-heading{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:10px}
-h2{font-size:13px;font-weight:600;margin:0}
-.edition-heading>span{font-size:11px;color:var(--muted)}
-.version-list{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;min-height:48px}
-.edition-button{min-height:49px;border:1px solid var(--line);background:transparent;border-radius:6px;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 7px;font-size:13px;transition:background .15s,border-color .15s}
-.edition-number{font-size:10px;font-weight:600;opacity:.6;letter-spacing:1px}
-.edition-button:hover{background:#efeee3}
-.edition-button[aria-pressed="true"]{background:var(--yellow);border-color:#d8c681;font-weight:600}
-.edition-description{font-size:12px;color:var(--muted);margin:10px 0 22px;min-height:18px}
 .reader{max-width:680px;margin:0 auto;scroll-margin-top:20px}
 .book-page{margin:0}
 .paper{display:block;background:var(--paper);border:1px solid #e4e3dc;box-shadow:0 3px 8px #303b2b05,0 15px 36px #303b2b09;cursor:zoom-in}
@@ -60,9 +50,7 @@ footer p{margin:0}
  h1{font-size:32px}.english-title{font-size:15px}
  .download-area{display:flex;align-items:center;gap:14px;text-align:left;margin-top:19px}
  .download{font-size:12px;padding:10px 15px;min-height:44px;gap:12px}.download-area p{margin:0;font-size:10px}
- .edition-heading{display:block}.edition-heading>span{display:block;margin-top:4px}
- .version-list{grid-template-columns:repeat(2,1fr)}.edition-button{justify-content:flex-start;padding-left:16px;min-height:44px;font-size:12px}
- .edition-description{font-size:11px;margin-bottom:17px}.pager{gap:8px}.pager button{padding:11px 12px;font-size:12px}.pager p{font-size:11px}
+ .pager{gap:8px}.pager button{padding:11px 12px;font-size:12px}.pager p{font-size:11px}
  .page-jumps{gap:2px}.page-jumps button{min-width:38px;min-height:44px}.keyboard-hint{display:none}
  footer{margin-top:32px;font-size:11px}
 }

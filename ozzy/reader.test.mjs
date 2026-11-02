@@ -8,16 +8,16 @@ import { clampPage, stateFromSearch } from './reader.mjs';
 const root = fileURLToPath(new URL('.', import.meta.url));
 const catalog = JSON.parse(await readFile(new URL('./books.json', import.meta.url), 'utf8'));
 
-test('shared reading links select a valid edition and page', () => {
+test('shared reading links, including old editions, open the final book at a valid page', () => {
   assert.deepEqual(stateFromSearch('', catalog.editions, catalog.defaultVersion), { version: 'v4', page: 0 });
-  assert.deepEqual(stateFromSearch('?v=v2&p=6', catalog.editions, 'v4'), { version: 'v2', page: 6 });
+  assert.deepEqual(stateFromSearch('?v=v2&p=6', catalog.editions, 'v4'), { version: 'v4', page: 6 });
   assert.deepEqual(stateFromSearch('?v=unknown&p=999', catalog.editions, 'v4'), { version: 'v4', page: 10 });
-  assert.deepEqual(stateFromSearch('?v=v1&p=bad', catalog.editions, 'v4'), { version: 'v1', page: 0 });
+  assert.deepEqual(stateFromSearch('?v=v1&p=bad', catalog.editions, 'v4'), { version: 'v4', page: 0 });
   for (const invalid of [-5, '-Infinity', 'NaN', undefined]) assert.equal(clampPage(invalid, 11), 0);
 });
 
-test('all four editions have complete, valid local pages and original PDFs', async () => {
-  assert.deepEqual(catalog.editions.map(item => item.id), ['v4', 'v3', 'v2', 'v1']);
+test('only the final book is listed, with complete pages and its original PDF', async () => {
+  assert.deepEqual(catalog.editions.map(item => item.id), ['v4']);
   const paths = new Set();
   for (const edition of catalog.editions) {
     assert.equal(edition.pages.length, 11);
@@ -35,7 +35,7 @@ test('all four editions have complete, valid local pages and original PDFs', asy
     assert.equal(pdf.toString('ascii', 0, 5), '%PDF-');
     assert.equal((await stat(resolve(root, edition.pdf))).size, edition.pdfBytes);
   }
-  assert.equal(paths.size, 44);
+  assert.equal(paths.size, 11);
   assert.ok(!JSON.stringify(catalog).includes('/Users/'));
 });
 
