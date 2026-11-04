@@ -89,6 +89,130 @@
           "height": 1224
         }
       ]
+    },
+    {
+      "id": "bedtime",
+      "name": "Ozzy 准备睡觉",
+      "description": "和妈妈、Teddy 一起，慢慢准备睡觉。",
+      "title": "Ozzy 准备睡觉",
+      "englishTitle": "Ozzy Gets Ready for Bed",
+      "language": "中英双语",
+      "pdf": "downloads/ozzy-bedtime.pdf",
+      "pdfBytes": 38588617,
+      "pages": [
+        {
+          "image": "assets/bedtime/page-00.webp",
+          "label": "封面",
+          "shortLabel": "封面",
+          "alt": "封面。Ozzy 准备睡觉。Ozzy Gets Ready for Bed。",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-01.webp",
+          "label": "前衬页",
+          "shortLabel": "前衬",
+          "alt": "前衬页。月亮、小书和 Teddy 图案。",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-02.webp",
+          "label": "第 1 页",
+          "shortLabel": "1",
+          "alt": "第 1 页。天快黑了。 玩具也要休息啦。 It's getting dark. Time to put my toys away.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-03.webp",
+          "label": "第 2 页",
+          "shortLabel": "2",
+          "alt": "第 2 页。洗好啦，擦一擦。 妈妈就在我身边。 All washed. Towel time. Mom stays right beside me.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-04.webp",
+          "label": "第 3 页",
+          "shortLabel": "3",
+          "alt": "第 3 页。换好干净的小尿布。 抹一抹，舒服啦。 A clean diaper. A little lotion. All clean. All comfy.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-05.webp",
+          "label": "第 4 页",
+          "shortLabel": "4",
+          "alt": "第 4 页。软软的小睡衣，穿好啦。 Teddy，你也准备好了吗？ Pajamas on. Nice and soft. Are you ready, Teddy?",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-06.webp",
+          "label": "第 5 页",
+          "shortLabel": "5",
+          "alt": "第 5 页。妈妈帮我刷牙。 上面刷，下面也刷。 Mom helps me brush. Top teeth. Bottom teeth.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-07.webp",
+          "label": "第 6 页",
+          "shortLabel": "6",
+          "alt": "第 6 页。选好一本小书。 我和妈妈靠在一起。 One little book. A cozy spot. Mom and I snuggle up.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-08.webp",
+          "label": "第 7 页",
+          "shortLabel": "7",
+          "alt": "第 7 页。翻一页，再翻一页。 故事讲完，合上小书。 Turn a page. Then one more. Our story's done. We close the book.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-09.webp",
+          "label": "第 8 页",
+          "shortLabel": "8",
+          "alt": "第 8 页。“妈妈，再抱一抱，好吗？” 妈妈把我轻轻抱住。 “One more hug, please, Mom.” Mom holds me close.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-10.webp",
+          "label": "第 9 页",
+          "shortLabel": "9",
+          "alt": "第 9 页。灯光暗下来。 “妈妈，我有点怕。” “我在呢。” The lights go low. “Mom, I'm a little scared.” “I'm right here.”",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-11.webp",
+          "label": "第 10 页",
+          "shortLabel": "10",
+          "alt": "第 10 页。晚安，妈妈。晚安，Teddy。 我躺好了，慢慢安静下来。 Good night, Mom. Good night, Teddy. I snuggle in. It's time to rest.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-12.webp",
+          "label": "后衬页",
+          "shortLabel": "后衬",
+          "alt": "后衬页。月亮、小书和 Teddy 图案。",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/bedtime/page-13.webp",
+          "label": "封底",
+          "shortLabel": "封底",
+          "alt": "封底。一点一点，慢慢长大。Little by little, I grow.",
+          "width": 1224,
+          "height": 1224
+        }
+      ]
     }
   ]
 }

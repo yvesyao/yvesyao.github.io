@@ -11,6 +11,13 @@ export function stateFromSearch(search, editions, defaultVersion) {
   return { version: edition.id, page: clampPage(params.get('p'), edition.pages.length) };
 }
 
+export function searchFromState(state, defaultVersion) {
+  const params = new URLSearchParams();
+  if (state.version !== defaultVersion) params.set('v', state.version);
+  if (state.page > 0) params.set('p', String(state.page));
+  return params.size ? `?${params}` : '';
+}
+
 async function startReader() {
   const byId = id => document.getElementById(id);
   const response = await fetch('./books.json', { cache: 'no-cache' });
@@ -45,8 +52,12 @@ async function startReader() {
       else button.removeAttribute('aria-current');
     });
     document.title = `${edition.title} | Ozzy & Teddy`;
+    document.querySelectorAll('[data-book]').forEach(link => {
+      if (link.dataset.book === edition.id) link.setAttribute('aria-current', 'page');
+      else link.removeAttribute('aria-current');
+    });
     message.hidden = true;
-    if (updateUrl) history.replaceState(null, '', `${location.pathname}${state.page ? `?p=${state.page}` : ''}${location.hash}`);
+    if (updateUrl) history.replaceState(null, '', `${location.pathname}${searchFromState(state, catalog.defaultVersion)}${location.hash}`);
     const upcoming = edition.pages[state.page + 1];
     if (upcoming) { const preload = new Image(); preload.src = upcoming.image; }
   }
@@ -55,7 +66,7 @@ async function startReader() {
   currentEdition.pages.forEach((page, index) => {
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = index === 0 ? '封面' : String(index);
+    button.textContent = page.shortLabel ?? (index === 0 ? '封面' : String(index));
     button.setAttribute('aria-label', `跳到${page.label}`);
     button.addEventListener('click', () => { state.page = index; render(); });
     byId('page-jumps').append(button);

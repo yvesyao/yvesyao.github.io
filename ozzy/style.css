@@ -15,6 +15,10 @@ button:disabled{cursor:default;opacity:.4}
 .wordmark span{font-size:19px;font-weight:400;font-style:italic}
 .home-link{font-size:13px;color:var(--muted);padding:10px 0}
 .home-link:hover{text-decoration:underline}
+.book-switcher{display:flex;flex-wrap:wrap;gap:8px;padding-top:24px}
+.book-switcher a{padding:10px 15px;border:1px solid var(--line);border-radius:6px;font-size:13px;min-height:44px}
+.book-switcher a:hover{background:#e9eadf}
+.book-switcher a[aria-current="page"]{background:var(--olive);border-color:var(--olive);color:#fff}
 .introduction{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:40px 0 28px}
 .eyebrow{font-size:10px;letter-spacing:1.7px;font-weight:600;color:var(--muted);margin:0 0 12px}
 h1{font-size:clamp(30px,4vw,43px);line-height:1.2;letter-spacing:-1.6px;margin:0;font-weight:700}
