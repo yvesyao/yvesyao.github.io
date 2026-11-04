@@ -3,88 +3,123 @@
   "editions": [
     {
       "id": "v4",
-      "name": "朗读双语版",
+      "name": "蓝色主题双语版",
       "description": "短句、对话和重复节奏，适合亲子共读。",
       "title": "Ozzy 学上厕所",
       "englishTitle": "Ozzy Learns to Use the Potty",
       "language": "中英双语",
-      "pdf": "downloads/ozzy-potty-v4.pdf",
-      "pdfBytes": 25433323,
+      "pdf": "downloads/ozzy-potty.pdf",
+      "pdfBytes": 36018467,
       "pages": [
         {
-          "image": "assets/v4/page-00.webp",
+          "image": "assets/potty/page-00.webp",
           "label": "封面",
-          "alt": "封面。Ozzy 学上厕所. Ozzy Learns to Use the Potty",
+          "shortLabel": "封面",
+          "alt": "封面。Ozzy 学上厕所。Ozzy Learns to Use the Potty。",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-01.webp",
+          "image": "assets/potty/page-01.webp",
+          "label": "前衬页",
+          "shortLabel": "前衬",
+          "alt": "前衬页。水滴、积木和 Teddy 头像。",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/potty/page-02.webp",
           "label": "第 1 页",
+          "shortLabel": "1",
           "alt": "第 1 页。我是 Ozzy。 我和 Teddy 一起玩积木。 I'm Ozzy. Teddy and I are playing with blocks.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-02.webp",
+          "image": "assets/potty/page-03.webp",
           "label": "第 2 页",
+          "shortLabel": "2",
           "alt": "第 2 页。咦，我想尿尿了。 我告诉大人：“我要尿尿！” Oh! I need to pee. “I need to pee!” I tell my grown-up.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-03.webp",
+          "image": "assets/potty/page-04.webp",
           "label": "第 3 页",
+          "shortLabel": "3",
           "alt": "第 3 页。“Teddy，和我一起去吧！” 我的小便盆就在这里。 “Come with me, Teddy!” Here's my potty.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-04.webp",
+          "image": "assets/potty/page-05.webp",
           "label": "第 4 页",
+          "shortLabel": "4",
           "alt": "第 4 页。我把裤子和小内裤拉下来。 “请帮帮我。” Pants down. Underwear down. “Can you help me, please?”",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-05.webp",
+          "image": "assets/potty/page-06.webp",
           "label": "第 5 页",
+          "shortLabel": "5",
           "alt": "第 5 页。我坐稳，双脚踩在地上。 没尿出来，也没关系。 我可以起来，过一会儿再试。 I sit down. Feet on the floor. No pee yet? That's okay. I can get up and try again later.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-06.webp",
+          "image": "assets/potty/page-07.webp",
           "label": "第 6 页",
+          "shortLabel": "6",
           "alt": "第 6 页。尿尿进小便盆里啦！ Teddy 就在旁边陪着我。 I peed in the potty! Teddy's right here with me.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-07.webp",
+          "image": "assets/potty/page-08.webp",
           "label": "第 7 页",
+          "shortLabel": "7",
           "alt": "第 7 页。“请帮我擦一擦。” 我也在慢慢学。 “Please help me wipe.” I'm learning, little by little.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-08.webp",
+          "image": "assets/potty/page-09.webp",
           "label": "第 8 页",
+          "shortLabel": "8",
           "alt": "第 8 页。我把小内裤和裤子拉上来。 大人把小便盆清理干净。 Underwear up. Pants up. My grown-up cleans the potty.",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-09.webp",
+          "image": "assets/potty/page-10.webp",
           "label": "第 9 页",
+          "shortLabel": "9",
           "alt": "第 9 页。打湿手，抹上洗手液。 搓搓手，至少二十秒。 冲干净，再擦干。洗好啦！ First, water. Then, soap. Scrub, scrub, scrub for at least 20 seconds. Rinse and dry. All done!",
           "width": 1224,
           "height": 1224
         },
         {
-          "image": "assets/v4/page-10.webp",
+          "image": "assets/potty/page-11.webp",
           "label": "第 10 页",
+          "shortLabel": "10",
           "alt": "第 10 页。有时裤子会湿，也没关系。 换上干净衣服，下次再试。 我正在学，可以慢慢来。 Sometimes my pants get wet. That's okay. I put on clean clothes. I'll try again later. I'm learning, little by little.",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/potty/page-12.webp",
+          "label": "后衬页",
+          "shortLabel": "后衬",
+          "alt": "后衬页。水滴、积木和 Teddy 头像。",
+          "width": 1224,
+          "height": 1224
+        },
+        {
+          "image": "assets/potty/page-13.webp",
+          "label": "封底",
+          "shortLabel": "封底",
+          "alt": "封底。一点一点，慢慢长大。Little by little, I grow.",
           "width": 1224,
           "height": 1224
         }
