@@ -39,6 +39,13 @@ async function practice(page, game) {
   await page.locator(`[data-practice=${game}]`).click();
   await page.locator("#begin-round").click();
 }
+async function response(page, symbol, label) {
+  assert.match(await page.locator("#response-feedback").textContent(), label);
+  assert.equal(
+    await page.locator("#response-feedback use").getAttribute("href"),
+    `./assets/icons.svg#${symbol}`,
+  );
+}
 async function saved(page) {
   return page.evaluate(() =>
     JSON.parse(localStorage.getItem("focus-atelier-v1") || "{}"),
@@ -57,7 +64,17 @@ test("responsive home, palettes and duration preferences survive reload", async 
       `overflow at ${width}`,
     );
   }
-  await p.locator("button[data-palette=sea]").click();
+  for (const palette of ["paper", "earth", "sea"]) {
+    await p.locator(`button[data-palette=${palette}]`).click();
+    await p.locator("#palette-art").evaluate((img) => img.decode());
+    assert.match(
+      await p.locator("#palette-art").getAttribute("src"),
+      new RegExp(`atelier-${palette}\\.webp$`),
+    );
+    assert.ok(
+      await p.locator("#palette-art").evaluate((img) => img.naturalWidth > 0),
+    );
+  }
   await p.locator('[data-minutes="5"]').click();
   await p.reload();
   assert.equal(await p.locator("html").getAttribute("data-palette"), "sea");
@@ -284,7 +301,7 @@ test("repeated colour prompts acknowledge each answer and visibly start a new qu
   await practice(p, "stroop");
   const first = await p.locator("#stimulus").textContent();
   await p.locator('[data-answer="0"]').click();
-  assert.match(await p.locator("#response-feedback").textContent(), /✓.*正确/);
+  await response(p, "check", /正确/);
   assert.equal(
     await p.locator('[data-answer="0"]').getAttribute("data-response"),
     "correct",
@@ -300,7 +317,7 @@ test("repeated colour prompts acknowledge each answer and visibly start a new qu
     null,
   );
   await p.locator('[data-answer="1"]').click();
-  assert.match(await p.locator("#response-feedback").textContent(), /×.*红/);
+  await response(p, "close", /应选.*红/);
   assert.equal(
     await p.locator('[data-answer="1"]').getAttribute("data-response"),
     "wrong",
@@ -310,7 +327,7 @@ test("repeated colour prompts acknowledge each answer and visibly start a new qu
     "solution",
   );
   await p.clock.runFor(4400);
-  assert.match(await p.locator("#response-feedback").textContent(), /超时.*红/);
+  await response(p, "clock", /超时.*红/);
 });
 
 test("shape and button taps share one response, with local hit and false-alarm feedback", async (t) => {
@@ -326,7 +343,7 @@ test("shape and button taps share one response, with local hit and false-alarm f
   // Synthetic sequence: circle, circle, square, circle, circle, circle, square.
   await p.locator("#target-symbol").tap();
   assert.match(await p.locator("#round-score").textContent(), /命中 1/);
-  assert.match(await p.locator("#response-feedback").textContent(), /✓.*点中/);
+  await response(p, "check", /点中/);
   assert.equal(await p.locator("#shape-response").isDisabled(), true);
   assert.equal(await p.locator("#tap-shape").isDisabled(), true);
   await p.keyboard.press("Space");
@@ -341,10 +358,10 @@ test("shape and button taps share one response, with local hit and false-alarm f
   await p.clock.runFor(1500);
   assert.match(await p.locator("#target-symbol").getAttribute("class"), /nogo/);
   await p.locator("#target-symbol").tap();
-  assert.match(await p.locator("#response-feedback").textContent(), /×.*停手/);
+  await response(p, "close", /停手/);
   assert.match(await p.locator("#round-score").textContent(), /误按 1/);
   await p.clock.runFor(7200);
-  assert.match(await p.locator("#response-feedback").textContent(), /✓.*停住/);
+  await response(p, "check", /停住/);
 });
 
 test("shape feedback survives reduced motion and new targets cannot be answered while paused", async (t) => {
@@ -356,7 +373,7 @@ test("shape feedback survives reduced motion and new targets cannot be answered 
   await practice(p, "gonogo");
   await p.locator("#shape-response").focus();
   await p.keyboard.press("Enter");
-  assert.match(await p.locator("#response-feedback").textContent(), /✓/);
+  await response(p, "check", /点中/);
   assert.equal(
     await p
       .locator("#target-symbol")

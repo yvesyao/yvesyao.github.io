@@ -146,8 +146,9 @@ a {
 .reminder-link {
   border-bottom: 1px solid var(--ink);
 }
-.reminder-link span {
-  font-size: 21px;
+.reminder-link .ui-icon {
+  width: 19px;
+  height: 19px;
   margin-right: 6px;
 }
 .header-note,
@@ -170,12 +171,6 @@ a {
 .eyebrow {
   margin: 0 0 24px;
   line-height: 1.5;
-}
-.tiny-star {
-  font-size: 20px;
-  color: var(--red);
-  vertical-align: middle;
-  margin-right: 10px;
 }
 .hero h1 {
   font: 500 clamp(42px, 4.4vw, 65px) / 1.43 var(--serif);
@@ -280,9 +275,6 @@ a {
   height: 57px;
   padding-inline: 22px;
 }
-.button-arrow {
-  font-size: 24px;
-}
 .micro-copy {
   font-size: 10px;
   color: var(--muted);
@@ -306,6 +298,9 @@ a {
   display: block;
   width: 100%;
   height: auto;
+  aspect-ratio: 1000 / 1078;
+  object-fit: cover;
+  background: var(--art-paper);
 }
 .print-number {
   position: absolute;
@@ -353,8 +348,9 @@ a {
   position: relative;
   width: 25px;
   height: 25px;
-  border-radius: 50%;
+  border-radius: 47% 53% 45% 55%;
   border: 3px solid var(--paper);
+  isolation: isolate;
 }
 .palette:before {
   content: "";
@@ -373,10 +369,6 @@ a {
 }
 .palette.sea {
   background: linear-gradient(125deg, #285c69 50%, #678e79 50%);
-}
-.art-sun {
-  transform-origin: 359px 119px;
-  animation: sunrise 1.5s ease both;
 }
 .hero-copy {
   animation: arrive 0.6s ease both;
@@ -417,6 +409,8 @@ h2 {
   width: 100%;
 }
 .card-art {
+  isolation: isolate;
+  border-radius: 2px 5px 3px 6px;
   height: 178px;
   overflow: hidden;
   position: relative;
@@ -424,6 +418,8 @@ h2 {
   transition: transform 0.35s;
 }
 .game-card:hover .card-art {
+  isolation: isolate;
+  border-radius: 2px 5px 3px 6px;
   transform: translateY(-5px);
 }
 .grid-art {
@@ -538,11 +534,6 @@ h2 {
   padding: 27px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-}
-.ritual-symbol {
-  font-size: 56px;
-  line-height: 1;
-  color: var(--red);
 }
 .ritual-strip h2 {
   font-size: 21px;
@@ -986,6 +977,7 @@ input[type="time"] {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 7px;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
@@ -1274,12 +1266,6 @@ input[type="time"] {
   color: var(--muted);
   font-size: 13px;
 }
-.summary-flower {
-  font-size: 80px;
-  color: var(--red);
-  line-height: 1;
-  margin: 35px 0 25px;
-}
 .summary-note {
   color: var(--muted);
   font-size: 13px;
@@ -1395,6 +1381,8 @@ input[type="time"] {
     gap: 22px;
   }
   .card-art {
+    isolation: isolate;
+    border-radius: 2px 5px 3px 6px;
     height: 160px;
   }
   .card-title > span {
@@ -1499,6 +1487,8 @@ input[type="time"] {
     padding-bottom: 0;
   }
   .card-art {
+    isolation: isolate;
+    border-radius: 2px 5px 3px 6px;
     grid-row: 1/4;
     height: 141px;
     margin: 0;
@@ -1559,9 +1549,6 @@ input[type="time"] {
     margin: 36px 0 28px;
     padding: 23px 0;
   }
-  .ritual-symbol {
-    font-size: 44px;
-  }
   .ritual-strip h2 {
     font-size: 19px;
   }
@@ -1569,7 +1556,7 @@ input[type="time"] {
     font-size: 10px;
   }
   .ritual-strip .text-button {
-    margin-left: 59px;
+    margin-left: 0;
     padding: 0;
   }
   .site-footer {
@@ -1687,10 +1674,6 @@ input[type="time"] {
   .result-card h2 {
     font-size: 21px;
   }
-  .summary-flower {
-    font-size: 65px;
-    margin: 20px 0;
-  }
   .dialog-actions {
     gap: 10px;
   }
@@ -1753,6 +1736,70 @@ input[type="time"] {
   }
   .primary:hover,
   .game-card:hover .card-art {
+    isolation: isolate;
+    border-radius: 2px 5px 3px 6px;
     transform: none;
   }
+}
+
+/* Paint stays on the gallery surfaces, away from the training stimuli. */
+.card-art::after,
+.palette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: url("./assets/brush-texture.webp") center / cover;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  opacity: 0.8;
+}
+.word-art::after {
+  background-position: 35% 70%;
+  background-size: 130%;
+}
+.shape-art::after {
+  background-position: 70% 20%;
+}
+.shape-circle {
+  border-radius: 46% 54% 49% 51%;
+}
+.ui-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  vertical-align: -0.2em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.start-daily > .ui-icon {
+  width: 24px;
+  height: 24px;
+}
+.close-dialog .ui-icon {
+  width: 22px;
+  height: 22px;
+}
+.intro-emblem:has(.ui-icon) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.intro-emblem .ui-icon {
+  width: 37px;
+  height: 37px;
+}
+.path-item .ui-icon,
+.answer-mark .ui-icon {
+  width: 15px;
+  height: 15px;
+}
+#shape-rule .ui-icon {
+  width: 13px;
+  height: 13px;
 }

@@ -28,6 +28,13 @@ let state = loaded.state;
 let session = null;
 let toastTimer;
 const clock = new ActiveClock();
+// All icon names are internal constants; game stimuli keep their own semantics.
+const icon = (name) =>
+  `<svg class="ui-icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#${name}"></use></svg>`;
+const responseIcon = (outcome) =>
+  icon(
+    outcome === "correct" ? "check" : outcome === "wrong" ? "close" : "clock",
+  );
 const GAME = {
   schulte: {
     name: "序光",
@@ -49,7 +56,7 @@ const GAME = {
     name: "留白",
     subtitle: "点按与停手",
     english: "PAUSE",
-    emblem: "● □",
+    emblem: `${icon("circle")}${icon("square")}`,
     instruction:
       "看到圆形，直接点图形或下方按钮一次；看到方形，两处都不要点。也可以按空格作答。",
     hints: ["圆形：点一次", "方形：不点", "图形、按钮、空格都能作答"],
@@ -83,6 +90,7 @@ function toast(message) {
 }
 function setPalette(name) {
   document.documentElement.dataset.palette = name;
+  $("#palette-art").src = `./assets/atelier-${name}.webp`;
   $("#palette-label").textContent = {
     paper: "纸上晴日",
     earth: "陶土午后",
@@ -139,7 +147,7 @@ function renderPath() {
   $("#session-path").innerHTML = session.queue
     .map(
       (id, i) =>
-        `<span class="path-item ${i === session.index ? "current" : i < session.index ? "done" : ""}" ${i === session.index ? 'aria-current="step"' : ""}><b>${i < session.index ? "✓" : i + 1}</b>${GAME[id].name}</span>`,
+        `<span class="path-item ${i === session.index ? "current" : i < session.index ? "done" : ""}" ${i === session.index ? 'aria-current="step"' : ""}><b>${i < session.index ? icon("check") : i + 1}</b>${GAME[id].name}</span>`,
     )
     .join("");
 }
@@ -180,7 +188,7 @@ function renderIntro() {
     info = gameInfo(id);
   const seconds = session.daily ? session.plan.roundMs / 1000 : 60;
   $("#stage").innerHTML =
-    `<div class="intro"><div class="intro-emblem" aria-hidden="true">${info.emblem}</div><p class="eyebrow">${String(session.index + 1).padStart(2, "0")} / ${info.english}</p><h1 tabindex="-1">${info.name} · ${info.subtitle}</h1><p class="intro-copy">${info.instruction}</p><ul class="intro-hints">${info.hints.map((h) => `<li>${h}</li>`).join("")}</ul><button class="primary" id="begin-round">准备好了，开始 ↗</button><p class="practice-tag">这一段 ${seconds} 秒${id === "schulte" ? ` · ${LEVELS[session.prefs.difficulty].size} × ${LEVELS[session.prefs.difficulty].size} 方格` : ""} · 读规则时不计时</p>${id === "stroop" ? `<button class="text-button" id="toggle-direction">${session.prefs.direction ? "切换回色词模式" : "不方便辨色？切换方向模式"} ↔</button>` : ""}</div>`;
+    `<div class="intro"><div class="intro-emblem" aria-hidden="true">${info.emblem}</div><p class="eyebrow">${String(session.index + 1).padStart(2, "0")} / ${info.english}</p><h1 tabindex="-1">${info.name} · ${info.subtitle}</h1><p class="intro-copy">${info.instruction}</p><ul class="intro-hints">${info.hints.map((h) => `<li>${h}</li>`).join("")}</ul><button class="primary" id="begin-round">准备好了，开始 ${icon("arrow-up-right")}</button><p class="practice-tag">这一段 ${seconds} 秒${id === "schulte" ? ` · ${LEVELS[session.prefs.difficulty].size} × ${LEVELS[session.prefs.difficulty].size} 方格` : ""} · 读规则时不计时</p>${id === "stroop" ? `<button class="text-button" id="toggle-direction">${session.prefs.direction ? "切换回色词模式" : "不方便辨色？切换方向模式"} ${icon("swap")}</button>` : ""}</div>`;
   $("#begin-round").addEventListener("click", beginRound);
   $("#toggle-direction")?.addEventListener("click", () => {
     session.prefs.direction = !session.prefs.direction;
@@ -217,7 +225,7 @@ function beginRound() {
   clock.start(performance.now());
   session.lastTick = performance.now();
   $("#pause-session").hidden = false;
-  $("#pause-session").textContent = "暂停 Ⅱ";
+  $("#pause-session").innerHTML = `暂停 ${icon("pause")}`;
   $("#stage").innerHTML =
     `<div class="game-shell"><div class="game-heading"><div><h1>${info.name} <span aria-hidden="true">/</span> ${info.subtitle}</h1><p>${id === "schulte" ? "按顺序寻找。每一次，只找下一个。" : id === "stroop" ? (session.prefs.direction ? "看中央箭头的方向，忽略两旁。" : "看墨色，不看字义。") : "圆形点一次，方形不点。"}</p></div><span class="timer" id="round-timer" aria-label="本段剩余时间">${timeText(session.duration)}</span></div><div class="progress-track" role="progressbar" aria-label="本段进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="progress-fill"></span></div><div class="game-canvas" id="game-canvas"></div><p class="game-feedback" id="game-feedback" role="status" aria-live="polite"></p><div class="game-footer"><span id="round-score"></span><span>切走页面会暂停 · 按 P 暂停</span></div></div>`;
   if (id === "schulte") newBoard(0);
@@ -245,7 +253,7 @@ function showResponse(outcome, label) {
   $("#trial-state").textContent = "本题已结束";
   const result = $("#response-feedback");
   result.dataset.outcome = outcome;
-  result.textContent = label;
+  result.innerHTML = `${responseIcon(outcome)}<span>${escapeHTML(label)}</span>`;
 }
 function newBoard(now) {
   const size = LEVELS[session.prefs.difficulty].size;
@@ -353,19 +361,17 @@ function resolveInterference(answer, now) {
   $("#stimulus").dataset.response = outcome;
   showResponse(
     outcome,
-    correct
-      ? "✓ 正确"
-      : `${answer === null ? "· 超时" : "× 应选"}：${expected}`,
+    correct ? "正确" : `${answer === null ? "超时" : "应选"}：${expected}`,
   );
   if (answer !== null) {
     const chosen = $(`[data-answer="${answer}"]`);
     chosen.dataset.response = outcome;
-    chosen.querySelector(".answer-mark").textContent = correct ? "✓" : "×";
+    chosen.querySelector(".answer-mark").innerHTML = responseIcon(outcome);
   }
   if (!correct) {
     const solution = $(`[data-answer="${q.answer}"]`);
     solution.dataset.response = "solution";
-    solution.querySelector(".answer-mark").textContent = "✓";
+    solution.querySelector(".answer-mark").innerHTML = icon("check");
   }
   if (answer === q.answer) {
     session.round.correct++;
@@ -384,7 +390,7 @@ function resolveInterference(answer, now) {
 }
 function setupShapes() {
   $("#game-canvas").innerHTML =
-    '<p class="game-instruction" id="shape-rule">● 圆形：点一次 &nbsp; · &nbsp; ■ 方形：不点</p><div class="trial-meta"><span id="trial-count"></span><span id="trial-state"></span></div><button class="shape-target" id="shape-response" type="button" aria-label="点击图形作答" aria-describedby="shape-rule"><span id="shape-visual"></span><span class="shape-mark" aria-hidden="true"></span></button><div class="response-feedback" id="response-feedback" aria-hidden="true"></div><button class="primary tap-button" id="tap-shape">点击作答 <span class="key-hint">SPACE</span></button><p class="tap-hint">直接点上方图形也可以 · 方形时两处都不要点</p>';
+    `<p class="game-instruction" id="shape-rule">${icon("circle")} 圆形：点一次 &nbsp; · &nbsp; ${icon("square")} 方形：不点</p><div class="trial-meta"><span id="trial-count"></span><span id="trial-state"></span></div><button class="shape-target" id="shape-response" type="button" aria-label="点击图形作答" aria-describedby="shape-rule"><span id="shape-visual"></span><span class="shape-mark" aria-hidden="true"></span></button><div class="response-feedback" id="response-feedback" aria-hidden="true"></div><button class="primary tap-button" id="tap-shape">点击作答 <span class="key-hint">SPACE</span></button><p class="tap-hint">直接点上方图形也可以 · 方形时两处都不要点</p>`;
   $("#tap-shape").addEventListener("click", answerShape);
   $("#shape-response").addEventListener("click", answerShape);
   newShape(0);
@@ -428,22 +434,22 @@ function resolveShape(pressed, now) {
         ? "missed"
         : "wrong";
   const label = {
-    hit: "✓ 点中了",
-    miss: "· 漏按了，圆形需要点一下",
-    falseAlarm: "× 方形要停手",
-    withheld: "✓ 停住了",
+    hit: "点中了",
+    miss: "漏按了，圆形需要点一下",
+    falseAlarm: "方形要停手",
+    withheld: "停住了",
   }[outcome];
   showResponse(response, label);
   $("#shape-response").dataset.response = response;
-  $(".shape-mark").textContent =
-    response === "correct" ? "✓" : response === "wrong" ? "×" : "·";
+  $(".shape-mark").innerHTML = responseIcon(response);
   $("#tap-shape").dataset.response = response;
-  $("#tap-shape").textContent = {
-    hit: "✓ 已点中",
-    miss: "· 这枚漏按了",
-    falseAlarm: "× 这次应停手",
-    withheld: "✓ 已停手",
+  const buttonLabel = {
+    hit: "已点中",
+    miss: "这枚漏按了",
+    falseAlarm: "这次应停手",
+    withheld: "已停手",
   }[outcome];
+  $("#tap-shape").innerHTML = `${responseIcon(response)} ${buttonLabel}`;
   if (outcome === "hit") session.round.times.push(now - q.start);
   feedback(
     {
@@ -484,7 +490,7 @@ function finishRound() {
   session.lastTick = performance.now();
   const next = GAME[session.queue[session.index + 1]];
   $("#stage").innerHTML =
-    `<div class="break-stage"><p class="eyebrow">A LITTLE SPACE BETWEEN</p><h1>目光，去远处走走。</h1><p>放松手指，看看窗外。下一段是「${next.name}」。</p><div class="breath-art" aria-hidden="true"><span id="break-timer">15</span></div><p id="break-status">休息 15 秒，再继续。</p><button class="primary" id="continue-session" hidden>进入下一段 ↗</button></div>`;
+    `<div class="break-stage"><p class="eyebrow">A LITTLE SPACE BETWEEN</p><h1>目光，去远处走走。</h1><p>放松手指，看看窗外。下一段是「${next.name}」。</p><div class="breath-art" aria-hidden="true"><span id="break-timer">15</span></div><p id="break-status">休息 15 秒，再继续。</p><button class="primary" id="continue-session" hidden>进入下一段 ${icon("arrow-up-right")}</button></div>`;
   $("#continue-session").addEventListener("click", () => {
     session.index++;
     renderIntro();
@@ -498,13 +504,13 @@ function pauseSession(
     return;
   clock.pause(stoppedAt);
   session.paused = true;
-  $("#pause-session").textContent = "继续 ▷";
+  $("#pause-session").innerHTML = `继续 ${icon("play")}`;
   const canvas = $("#game-canvas") || $(".break-stage");
   if (canvas) {
     canvas.style.position = "relative";
     const cover = document.createElement("div");
     cover.className = "paused-cover";
-    cover.innerHTML = `<h2>留一会儿白。</h2><p>${escapeHTML(reason)}</p><button class="primary" id="resume-session">继续练习 ▷</button>`;
+    cover.innerHTML = `<h2>留一会儿白。</h2><p>${escapeHTML(reason)}</p><button class="primary" id="resume-session">继续练习 ${icon("play")}</button>`;
     canvas.append(cover);
     $("#resume-session").addEventListener("click", resumeSession);
     $("#resume-session").focus({ preventScroll: true });
@@ -516,7 +522,7 @@ function resumeSession() {
   session.paused = false;
   clock.start(performance.now());
   session.lastTick = performance.now();
-  $("#pause-session").textContent = "暂停 Ⅱ";
+  $("#pause-session").innerHTML = `暂停 ${icon("pause")}`;
 }
 function finishSession() {
   session.phase = "summary";
@@ -539,7 +545,7 @@ function finishSession() {
   });
   const seconds = session.countedMs / 1000;
   $("#stage").innerHTML =
-    `<div class="summary"><div class="summary-flower" aria-hidden="true">✳</div><p class="eyebrow">A SMALL PRACTICE, WELL KEPT</p><h1 tabindex="-1">${session.daily ? "今天，就练到这里。" : "初次相识，慢慢来。"}</h1><p class="summary-note">${session.daily ? `你给自己留了 ${Math.round(seconds / 60)} 分钟。谢谢这段专心的时间。` : "完成了 1 分钟试玩。试玩记录单独保存，不计作每日练习完成。"}</p><div class="result-grid ${session.daily ? "" : "single"}">${session.results.map(resultCard).join("")}</div><p class="next-step">收起屏幕，把这份专心带去一件小事。<br>这里记录的是游戏表现，不是能力评分。</p><div class="dialog-actions"><button class="primary" id="back-home">完成，回到小画室</button><button class="secondary" data-dialog="reminder-dialog">约好明天</button></div></div>`;
+    `<div class="summary"><p class="eyebrow">A SMALL PRACTICE, WELL KEPT</p><h1 tabindex="-1">${session.daily ? "今天，就练到这里。" : "初次相识，慢慢来。"}</h1><p class="summary-note">${session.daily ? `你给自己留了 ${Math.round(seconds / 60)} 分钟。谢谢这段专心的时间。` : "完成了 1 分钟试玩。试玩记录单独保存，不计作每日练习完成。"}</p><div class="result-grid ${session.daily ? "" : "single"}">${session.results.map(resultCard).join("")}</div><p class="next-step">收起屏幕，把这份专心带去一件小事。<br>这里记录的是游戏表现，不是能力评分。</p><div class="dialog-actions"><button class="primary" id="back-home">完成，回到小画室</button><button class="secondary" data-dialog="reminder-dialog">约好明天</button></div></div>`;
   $("#back-home").addEventListener("click", goHome);
   bindDialogButtons($("#stage"));
   $(".summary h1").focus({ preventScroll: true });
@@ -626,7 +632,7 @@ function renderHistory() {
             `<li><span>${escapeHTML(h.day)}</span><span>${h.daily ? "每日练习" : "一分钟试玩"} · ${Math.round(h.seconds / 60)} 分钟</span></li>`,
         )
         .join("")}</ul>`
-    : '<div class="empty-record"><span class="summary-flower" aria-hidden="true">✳</span><p>这里还是一张白纸。<br>完成第一次练习，就会留下足迹。</p></div>';
+    : '<div class="empty-record"><p>这里还是一张白纸。<br>完成第一次练习，就会留下足迹。</p></div>';
   $("#clear-history").hidden = !state.history.length;
   $("#clear-history").textContent = "清除本机练习记录";
   delete $("#clear-history").dataset.confirm;
