@@ -220,6 +220,7 @@ function beginRound() {
   };
   session.trial = null;
   session.pendingInterference = null;
+  session.pendingShape = null;
   session.trialNumber = 0;
   session.nextAt = null;
   session.deck = [];
@@ -439,10 +440,18 @@ function setupShapes() {
   $("#shape-response").addEventListener("click", answerShape);
   newShape(0);
 }
-function newShape(now) {
-  resetQuestionFeedback();
+function nextShape() {
   if (!session.deck.length) session.deck = shapeDeck();
   const go = session.deck.pop();
+  const layer = document.createElement("span");
+  layer.className = "shape-layer";
+  layer.innerHTML = `<span class="target-symbol ${go ? "" : "nogo"}" role="img" aria-label="${go ? "圆形" : "方形"}"></span>`;
+  return { go, layer };
+}
+function newShape(now) {
+  resetQuestionFeedback();
+  const { go, layer } = session.pendingShape || nextShape();
+  session.pendingShape = null;
   session.trial = {
     go,
     start: now,
@@ -450,11 +459,30 @@ function newShape(now) {
     closed: false,
   };
   session.nextAt = null;
-  $("#shape-visual").innerHTML =
-    `<span class="target-symbol ${go ? "" : "nogo"}" id="target-symbol" role="img" aria-label="${go ? "圆形" : "方形"}"></span>`;
+  layer.className = "shape-layer";
+  layer.removeAttribute("aria-hidden");
+  $("#shape-visual").replaceChildren(layer);
+  layer.firstElementChild.id = "target-symbol";
   $("#shape-response").disabled = false;
   $("#tap-shape").disabled = false;
   $("#tap-shape").innerHTML = '点击作答 <span class="key-hint">SPACE</span>';
+}
+function queueShape(now) {
+  const visual = $("#shape-visual");
+  const outgoing = visual.firstElementChild;
+  const pending = nextShape();
+  session.pendingShape = pending;
+  outgoing.classList.add("shape-outgoing");
+  outgoing.setAttribute("aria-hidden", "true");
+  pending.layer.classList.add("shape-incoming");
+  pending.layer.setAttribute("aria-hidden", "true");
+  // Use the existing inter-trial gap; previewing does not open scoring early.
+  $("#shape-response").style.setProperty(
+    "--shape-handoff-duration",
+    `${session.nextAt - now}ms`,
+  );
+  visual.append(pending.layer);
+  $("#trial-state").textContent = "下一题准备中";
 }
 function answerShape() {
   const now = inputTime();
@@ -649,8 +677,14 @@ function tick() {
     if (currentGame() === "stroop") resolveInterference(null, now);
     else resolveShape(false, now);
   }
-  if (currentGame() === "gonogo" && now >= q.deadline)
-    $("#target-symbol").classList.add("blank");
+  if (
+    currentGame() === "gonogo" &&
+    now >= q.deadline &&
+    session.nextAt !== null &&
+    now < session.nextAt &&
+    !session.pendingShape
+  )
+    queueShape(now);
   if (session.nextAt !== null && now >= session.nextAt) {
     if (currentGame() === "stroop") newInterference(now);
     else newShape(now);

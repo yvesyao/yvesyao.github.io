@@ -1023,9 +1023,6 @@ input[type="time"] {
 .response-feedback[data-outcome] {
   color: var(--response-ink);
 }
-.target-symbol {
-  animation: question-arrive 180ms cubic-bezier(0.32, 0.72, 0, 1);
-}
 .stimulus-content {
   grid-area: 1 / 1;
   white-space: nowrap;
@@ -1060,16 +1057,6 @@ input[type="time"] {
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
-  }
-}
-@keyframes question-arrive {
-  from {
-    opacity: 0.55;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
   }
 }
 @keyframes answer-ring {
@@ -1196,7 +1183,7 @@ input[type="time"] {
 .shape-target:not(:disabled):active .target-symbol {
   transform: scale(0.96);
 }
-.shape-target[data-response] .target-symbol {
+.shape-target[data-response] #target-symbol {
   outline: 3px solid var(--response-ink);
   outline-offset: 8px;
   animation: shape-press 180ms ease-out;
@@ -1224,8 +1211,52 @@ input[type="time"] {
   width: 104px;
   height: 104px;
 }
-.target-symbol.blank {
-  visibility: hidden;
+#shape-visual {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+.shape-layer {
+  display: grid;
+  place-items: center;
+  grid-area: 1 / 1;
+}
+.shape-outgoing {
+  opacity: 0;
+}
+.shape-outgoing,
+.shape-target:has(.shape-outgoing) > .shape-mark {
+  animation: shape-exit var(--shape-handoff-duration)
+    cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.shape-incoming {
+  animation: shape-enter var(--shape-handoff-duration)
+    cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.is-paused .shape-layer,
+.is-paused .shape-mark {
+  animation-play-state: paused;
+}
+@keyframes shape-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes shape-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .tap-button {
   position: relative;
@@ -1889,6 +1920,13 @@ input[type="time"] {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  /* Keep the last shape stable, then replace it when the new trial opens. */
+  .shape-outgoing {
+    opacity: 1;
+  }
+  .shape-incoming {
+    opacity: 0;
+  }
   *,
   *:before,
   *:after {

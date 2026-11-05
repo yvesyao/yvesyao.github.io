@@ -525,3 +525,128 @@ test("game text cannot be selected by repeated clicks while home copy remains se
     "none",
   );
 });
+
+test("shape handoff crossfades repeated and different shapes without a blank or duplicate score", async (t) => {
+  const p = await fixture(t, { reducedMotion: "no-preference" });
+  await p.addStyleTag({
+    content: ".shape-layer { animation-play-state: paused !important; }",
+  });
+  await p.evaluate(() => {
+    Math.random = () => 0.5;
+  });
+  await practice(p, "gonogo");
+  for (const [index, nextLabel] of ["圆形", "方形"].entries()) {
+    await p.keyboard.press("Space");
+    await p.clock.runFor(1200);
+    assert.equal(
+      await p
+        .locator("#target-symbol")
+        .evaluate((el) => getComputedStyle(el).visibility),
+      "visible",
+    );
+    assert.equal(await p.locator(".shape-layer").count(), 2);
+    assert.equal(
+      await p
+        .locator(".shape-incoming .target-symbol")
+        .getAttribute("aria-label"),
+      nextLabel,
+    );
+    const layers = await p.locator(".shape-layer").evaluateAll((nodes) =>
+      nodes.map((node) => {
+        node.getAnimations()[0].currentTime = 125;
+        return Number(getComputedStyle(node).opacity);
+      }),
+    );
+    assert.ok(layers.every((opacity) => opacity > 0 && opacity < 1));
+    assert.ok(Math.abs(layers[0] + layers[1] - 1) < 0.02);
+    assert.equal(
+      await p
+        .locator(".shape-incoming .target-symbol")
+        .evaluate((el) => getComputedStyle(el).outlineStyle),
+      "none",
+    );
+    assert.equal(await p.locator("#shape-response").isDisabled(), true);
+    await p.keyboard.press("Space");
+    await p.locator("#shape-response").dispatchEvent("click");
+    assert.match(
+      await p.locator("#round-score").textContent(),
+      new RegExp(`命中 ${index + 1} · 漏按 0 · 误按 0`),
+    );
+    await p.clock.runFor(300);
+    assert.equal(await p.locator(".shape-layer").count(), 1);
+    assert.equal(
+      await p.locator("#target-symbol").getAttribute("aria-label"),
+      nextLabel,
+    );
+    assert.equal(await p.locator("#shape-response").isEnabled(), true);
+  }
+});
+
+test("reduced-motion shape handoff retains the old target until the next trial is ready", async (t) => {
+  const p = await fixture(t);
+  await p.evaluate(() => {
+    Math.random = () => 0.5;
+  });
+  await practice(p, "gonogo");
+  await p.clock.runFor(1500); // Second circle, followed by a square.
+  await p.keyboard.press("Space");
+  await p.clock.runFor(1200);
+  assert.equal(
+    await p
+      .locator("#target-symbol")
+      .evaluate((el) => getComputedStyle(el).visibility),
+    "visible",
+  );
+  const layers = await p.locator(".shape-layer").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const style = getComputedStyle(node);
+      return { opacity: style.opacity, animation: style.animationName };
+    }),
+  );
+  assert.deepEqual(layers, [
+    { opacity: "1", animation: "none" },
+    { opacity: "0", animation: "none" },
+  ]);
+  assert.equal(
+    await p.locator("#target-symbol").getAttribute("aria-label"),
+    "圆形",
+  );
+  await p.clock.runFor(300);
+  assert.equal(
+    await p.locator("#target-symbol").getAttribute("aria-label"),
+    "方形",
+  );
+  assert.equal(await p.locator(".shape-layer").count(), 1);
+});
+
+test("pausing a shape handoff freezes both layers and preserves the pending trial", async (t) => {
+  const p = await fixture(t, { reducedMotion: "no-preference" });
+  await p.evaluate(() => {
+    Math.random = () => 0.5;
+  });
+  await practice(p, "gonogo");
+  await p.keyboard.press("Space");
+  await p.clock.runFor(1200);
+  await p.keyboard.press("p");
+  assert.deepEqual(
+    await p
+      .locator(".shape-layer")
+      .evaluateAll((nodes) =>
+        nodes.map((el) => getComputedStyle(el).animationPlayState),
+      ),
+    ["paused", "paused"],
+  );
+  const timer = await p.locator("#round-timer").textContent();
+  await p.clock.runFor(10000);
+  assert.equal(await p.locator("#round-timer").textContent(), timer);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 1 题");
+  await p.locator("#resume-session").click();
+  await p.clock.runFor(300);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 2 题");
+  assert.equal(await p.locator(".shape-layer").count(), 1);
+  await p.keyboard.press("Space");
+  assert.match(
+    await p.locator("#round-score").textContent(),
+    /命中 2 · 漏按 0 · 误按 0/,
+  );
+});
