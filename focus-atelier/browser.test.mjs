@@ -274,3 +274,106 @@ test("six-by-six remains visible and tappable on a narrow phone", async (t) => {
     `${box.width} × ${box.height}`,
   );
 });
+
+test("repeated colour prompts acknowledge each answer and visibly start a new question", async (t) => {
+  const p = await fixture(t, { viewport: { width: 390, height: 844 } });
+  p.setDefaultTimeout(3000);
+  await p.evaluate(() => {
+    Math.random = () => 0;
+  });
+  await practice(p, "stroop");
+  const first = await p.locator("#stimulus").textContent();
+  await p.locator('[data-answer="0"]').click();
+  assert.match(await p.locator("#response-feedback").textContent(), /✓.*正确/);
+  assert.equal(
+    await p.locator('[data-answer="0"]').getAttribute("data-response"),
+    "correct",
+  );
+  await p.keyboard.press("1");
+  assert.match(await p.locator("#round-score").textContent(), /正确 1/);
+  await p.clock.runFor(400);
+  assert.equal(await p.locator("#stimulus").textContent(), first);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 2 题");
+  assert.equal(await p.locator("#trial-state").textContent(), "请选择");
+  assert.equal(
+    await p.locator('[data-answer="0"]').getAttribute("data-response"),
+    null,
+  );
+  await p.locator('[data-answer="1"]').click();
+  assert.match(await p.locator("#response-feedback").textContent(), /×.*红/);
+  assert.equal(
+    await p.locator('[data-answer="1"]').getAttribute("data-response"),
+    "wrong",
+  );
+  assert.equal(
+    await p.locator('[data-answer="0"]').getAttribute("data-response"),
+    "solution",
+  );
+  await p.clock.runFor(4400);
+  assert.match(await p.locator("#response-feedback").textContent(), /超时.*红/);
+});
+
+test("shape and button taps share one response, with local hit and false-alarm feedback", async (t) => {
+  const p = await fixture(t, {
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+  });
+  p.setDefaultTimeout(3000);
+  await p.evaluate(() => {
+    Math.random = () => 0.5;
+  });
+  await practice(p, "gonogo");
+  // Synthetic sequence: circle, circle, square, circle, circle, circle, square.
+  await p.locator("#target-symbol").tap();
+  assert.match(await p.locator("#round-score").textContent(), /命中 1/);
+  assert.match(await p.locator("#response-feedback").textContent(), /✓.*点中/);
+  assert.equal(await p.locator("#shape-response").isDisabled(), true);
+  assert.equal(await p.locator("#tap-shape").isDisabled(), true);
+  await p.keyboard.press("Space");
+  assert.match(await p.locator("#round-score").textContent(), /命中 1/);
+  await p.clock.runFor(1500);
+  await p.locator("#tap-shape").tap();
+  assert.match(await p.locator("#round-score").textContent(), /命中 2/);
+  assert.equal(
+    await p.locator("#shape-response").getAttribute("data-response"),
+    "correct",
+  );
+  await p.clock.runFor(1500);
+  assert.match(await p.locator("#target-symbol").getAttribute("class"), /nogo/);
+  await p.locator("#target-symbol").tap();
+  assert.match(await p.locator("#response-feedback").textContent(), /×.*停手/);
+  assert.match(await p.locator("#round-score").textContent(), /误按 1/);
+  await p.clock.runFor(7200);
+  assert.match(await p.locator("#response-feedback").textContent(), /✓.*停住/);
+});
+
+test("shape feedback survives reduced motion and new targets cannot be answered while paused", async (t) => {
+  const p = await fixture(t);
+  p.setDefaultTimeout(3000);
+  await p.evaluate(() => {
+    Math.random = () => 0.5;
+  });
+  await practice(p, "gonogo");
+  await p.locator("#shape-response").focus();
+  await p.keyboard.press("Enter");
+  assert.match(await p.locator("#response-feedback").textContent(), /✓/);
+  assert.equal(
+    await p
+      .locator("#target-symbol")
+      .evaluate((el) => getComputedStyle(el).animationName),
+    "none",
+  );
+  await p.clock.runFor(1500);
+  await p.locator("#pause-session").click();
+  const score = await p.locator("#round-score").textContent();
+  // Space on the focused resume button is a valid native button activation.
+  // Test game inputs separately while the pause cover is still present.
+  await p.evaluate(() => document.activeElement.blur());
+  await p.keyboard.press("Space");
+  await p.locator("#shape-response").dispatchEvent("click");
+  await p.clock.runFor(3000);
+  assert.equal(await p.locator("#round-score").textContent(), score);
+  await p.locator("#resume-session").click();
+  await p.clock.runFor(1200);
+  assert.match(await p.locator("#response-feedback").textContent(), /漏按/);
+});

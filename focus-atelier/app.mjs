@@ -51,8 +51,8 @@ const GAME = {
     english: "PAUSE",
     emblem: "● □",
     instruction:
-      "看到圆形，点击一次；看到方形，保持不动。注意看形状，不用追着速度跑。",
-    hints: ["圆形：点一次", "方形：不点", "可点击按钮或按空格"],
+      "看到圆形，直接点图形或下方按钮一次；看到方形，两处都不要点。也可以按空格作答。",
+    hints: ["圆形：点一次", "方形：不点", "图形、按钮、空格都能作答"],
   },
 };
 const escapeHTML = (s) =>
@@ -210,6 +210,7 @@ function beginRound() {
     direction: session.prefs.direction,
   };
   session.trial = null;
+  session.trialNumber = 0;
   session.nextAt = null;
   session.deck = [];
   clock.reset();
@@ -226,6 +227,25 @@ function beginRound() {
 }
 function feedback(text) {
   if ($("#game-feedback")) $("#game-feedback").textContent = text;
+}
+function resetQuestionFeedback() {
+  session.trialNumber++;
+  $("#trial-count").textContent = `第 ${session.trialNumber} 题`;
+  $("#trial-state").textContent =
+    currentGame() === "stroop" ? "请选择" : "观察形状";
+  $("#response-feedback").textContent = "";
+  delete $("#response-feedback").dataset.outcome;
+  $$("#game-canvas [data-response]").forEach(
+    (el) => delete el.dataset.response,
+  );
+  $$(".answer-mark, .shape-mark").forEach((el) => (el.textContent = ""));
+  feedback("");
+}
+function showResponse(outcome, label) {
+  $("#trial-state").textContent = "本题已结束";
+  const result = $("#response-feedback");
+  result.dataset.outcome = outcome;
+  result.textContent = label;
 }
 function newBoard(now) {
   const size = LEVELS[session.prefs.difficulty].size;
@@ -274,7 +294,7 @@ function chooseNumber(button) {
 function setupInterference() {
   const direction = session.prefs.direction;
   $("#game-canvas").innerHTML =
-    `<p class="game-instruction">${direction ? "选中央箭头的方向" : "选墨色，忽略字义"}</p><div class="stimulus ${direction ? "arrows" : ""}" id="stimulus"></div><div class="answer-options ${direction ? "two" : ""}">${(direction ? ["← 左", "右 →"] : COLORS.map((c) => c.name)).map((name, i) => `<button class="answer-button" data-answer="${i}">${direction ? "" : `<span class="color-swatch" style="background:${COLORS[i].hex}" aria-hidden="true"></span>`}${name}<span class="key-hint">${direction ? (i ? "→" : "←") : i + 1}</span></button>`).join("")}</div>`;
+    `<p class="game-instruction">${direction ? "选中央箭头的方向" : "选墨色，忽略字义"}</p><div class="trial-meta"><span id="trial-count"></span><span id="trial-state"></span></div><div class="stimulus ${direction ? "arrows" : ""}" id="stimulus"></div><div class="response-feedback" id="response-feedback" aria-hidden="true"></div><div class="answer-options ${direction ? "two" : ""}">${(direction ? ["← 左", "右 →"] : COLORS.map((c) => c.name)).map((name, i) => `<button class="answer-button" data-answer="${i}">${direction ? "" : `<span class="color-swatch" style="background:${COLORS[i].hex}" aria-hidden="true"></span>`}${name}<span class="key-hint">${direction ? (i ? "→" : "←") : i + 1}</span><span class="answer-mark" aria-hidden="true"></span></button>`).join("")}</div>`;
   $$("[data-answer]").forEach((b) =>
     b.addEventListener("click", () =>
       answerInterference(Number(b.dataset.answer)),
@@ -283,6 +303,7 @@ function setupInterference() {
   newInterference(0);
 }
 function newInterference(now) {
+  resetQuestionFeedback();
   const q = interference(session.prefs.direction);
   session.trial = {
     ...q,
@@ -292,17 +313,21 @@ function newInterference(now) {
   };
   session.nextAt = null;
   const stimulus = $("#stimulus");
+  // A fresh child makes identical consecutive prompts visibly enter again.
+  const content = document.createElement("span");
+  content.className = "stimulus-content";
   if (session.prefs.direction) {
     const arrows = ["←", "→"];
-    stimulus.textContent =
+    content.textContent =
       arrows[q.distractor].repeat(2) +
       arrows[q.answer] +
       arrows[q.distractor].repeat(2);
     stimulus.removeAttribute("style");
   } else {
-    stimulus.textContent = COLORS[q.distractor].name;
+    content.textContent = COLORS[q.distractor].name;
     stimulus.style.color = COLORS[q.answer].hex;
   }
+  stimulus.replaceChildren(content);
   $$("[data-answer]").forEach((b) => (b.disabled = false));
 }
 function answerInterference(answer) {
@@ -318,6 +343,30 @@ function resolveInterference(answer, now) {
   const q = session.trial;
   if (q.closed) return;
   q.closed = true;
+  const correct = answer === q.answer;
+  const outcome = correct ? "correct" : answer === null ? "missed" : "wrong";
+  const expected = session.prefs.direction
+    ? q.answer
+      ? "右"
+      : "左"
+    : COLORS[q.answer].name;
+  $("#stimulus").dataset.response = outcome;
+  showResponse(
+    outcome,
+    correct
+      ? "✓ 正确"
+      : `${answer === null ? "· 超时" : "× 应选"}：${expected}`,
+  );
+  if (answer !== null) {
+    const chosen = $(`[data-answer="${answer}"]`);
+    chosen.dataset.response = outcome;
+    chosen.querySelector(".answer-mark").textContent = correct ? "✓" : "×";
+  }
+  if (!correct) {
+    const solution = $(`[data-answer="${q.answer}"]`);
+    solution.dataset.response = "solution";
+    solution.querySelector(".answer-mark").textContent = "✓";
+  }
   if (answer === q.answer) {
     session.round.correct++;
     session.round.times.push(now - q.start);
@@ -335,11 +384,13 @@ function resolveInterference(answer, now) {
 }
 function setupShapes() {
   $("#game-canvas").innerHTML =
-    '<p class="game-instruction">● 圆形：点一次 &nbsp; · &nbsp; ■ 方形：不点</p><div class="shape-target"><span class="target-symbol" id="target-symbol" role="img" aria-label="圆形"></span></div><button class="primary tap-button" id="tap-shape">点一下 <span class="key-hint">SPACE</span></button>';
+    '<p class="game-instruction" id="shape-rule">● 圆形：点一次 &nbsp; · &nbsp; ■ 方形：不点</p><div class="trial-meta"><span id="trial-count"></span><span id="trial-state"></span></div><button class="shape-target" id="shape-response" type="button" aria-label="点击图形作答" aria-describedby="shape-rule"><span id="shape-visual"></span><span class="shape-mark" aria-hidden="true"></span></button><div class="response-feedback" id="response-feedback" aria-hidden="true"></div><button class="primary tap-button" id="tap-shape">点击作答 <span class="key-hint">SPACE</span></button><p class="tap-hint">直接点上方图形也可以 · 方形时两处都不要点</p>';
   $("#tap-shape").addEventListener("click", answerShape);
+  $("#shape-response").addEventListener("click", answerShape);
   newShape(0);
 }
 function newShape(now) {
+  resetQuestionFeedback();
   if (!session.deck.length) session.deck = shapeDeck();
   const go = session.deck.pop();
   session.trial = {
@@ -349,9 +400,11 @@ function newShape(now) {
     closed: false,
   };
   session.nextAt = null;
-  $("#target-symbol").className = `target-symbol ${go ? "" : "nogo"}`;
-  $("#target-symbol").setAttribute("aria-label", go ? "圆形" : "方形");
+  $("#shape-visual").innerHTML =
+    `<span class="target-symbol ${go ? "" : "nogo"}" id="target-symbol" role="img" aria-label="${go ? "圆形" : "方形"}"></span>`;
+  $("#shape-response").disabled = false;
   $("#tap-shape").disabled = false;
+  $("#tap-shape").innerHTML = '点击作答 <span class="key-hint">SPACE</span>';
 }
 function answerShape() {
   const now = inputTime();
@@ -368,6 +421,29 @@ function resolveShape(pressed, now) {
   q.closed = true;
   const outcome = gradeShape(q.go, pressed);
   session.round[outcome]++;
+  const response =
+    outcome === "hit" || outcome === "withheld"
+      ? "correct"
+      : outcome === "miss"
+        ? "missed"
+        : "wrong";
+  const label = {
+    hit: "✓ 点中了",
+    miss: "· 漏按了，圆形需要点一下",
+    falseAlarm: "× 方形要停手",
+    withheld: "✓ 停住了",
+  }[outcome];
+  showResponse(response, label);
+  $("#shape-response").dataset.response = response;
+  $(".shape-mark").textContent =
+    response === "correct" ? "✓" : response === "wrong" ? "×" : "·";
+  $("#tap-shape").dataset.response = response;
+  $("#tap-shape").textContent = {
+    hit: "✓ 已点中",
+    miss: "· 这枚漏按了",
+    falseAlarm: "× 这次应停手",
+    withheld: "✓ 已停手",
+  }[outcome];
   if (outcome === "hit") session.round.times.push(now - q.start);
   feedback(
     {
@@ -378,6 +454,7 @@ function resolveShape(pressed, now) {
     }[outcome],
   );
   $("#tap-shape").disabled = true;
+  $("#shape-response").disabled = true;
   session.nextAt = q.deadline + 250;
   updateScore();
 }
