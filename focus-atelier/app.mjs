@@ -28,6 +28,7 @@ let state = loaded.state;
 let session = null;
 let toastTimer;
 const clock = new ActiveClock();
+const WORD_HANDOFF_MS = 200;
 // All icon names are internal constants; game stimuli keep their own semantics.
 const icon = (name) =>
   `<svg class="ui-icon" aria-hidden="true" focusable="false"><use href="./assets/icons.svg#${name}"></use></svg>`;
@@ -218,6 +219,7 @@ function beginRound() {
     direction: session.prefs.direction,
   };
   session.trial = null;
+  session.pendingInterference = null;
   session.trialNumber = 0;
   session.nextAt = null;
   session.deck = [];
@@ -227,7 +229,7 @@ function beginRound() {
   $("#pause-session").hidden = false;
   $("#pause-session").innerHTML = `暂停 ${icon("pause")}`;
   $("#stage").innerHTML =
-    `<div class="game-shell"><div class="game-heading"><div><h1>${info.name} <span aria-hidden="true">/</span> ${info.subtitle}</h1><p>${id === "schulte" ? "按顺序寻找。每一次，只找下一个。" : id === "stroop" ? (session.prefs.direction ? "看中央箭头的方向，忽略两旁。" : "看墨色，不看字义。") : "圆形点一次，方形不点。"}</p></div><span class="timer" id="round-timer" aria-label="本段剩余时间">${timeText(session.duration)}</span></div><div class="progress-track" role="progressbar" aria-label="本段进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="progress-fill"></span></div><div class="game-canvas" id="game-canvas"></div><p class="game-feedback" id="game-feedback" role="status" aria-live="polite"></p><div class="game-footer"><span id="round-score"></span><span>切走页面会暂停 · 按 P 暂停</span></div></div>`;
+    `<div class="game-shell" data-game="${id}"><div class="game-heading"><div><h1>${info.name} <span aria-hidden="true">/</span> ${info.subtitle}</h1><p>${id === "schulte" ? "按顺序寻找。每一次，只找下一个。" : id === "stroop" ? (session.prefs.direction ? "看中央箭头的方向，忽略两旁。" : "看墨色，不看字义。") : "圆形点一次，方形不点。"}</p></div><span class="timer" id="round-timer" aria-label="本段剩余时间">${timeText(session.duration)}</span></div><div class="progress-track" role="progressbar" aria-label="本段进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="progress-fill"></span></div><div class="game-canvas" id="game-canvas"></div><p class="game-feedback" id="game-feedback" role="status" aria-live="polite"></p><div class="game-footer"><span id="round-score"></span><span>切走页面会暂停 · 按 P 暂停</span></div></div>`;
   if (id === "schulte") newBoard(0);
   else if (id === "stroop") setupInterference();
   else setupShapes();
@@ -259,7 +261,7 @@ function newBoard(now) {
   const size = LEVELS[session.prefs.difficulty].size;
   session.board = { next: 1, size, start: now, values: grid(size) };
   $("#game-canvas").innerHTML =
-    `<div class="next-number"><span>下一枚 <strong id="next-number" aria-live="polite">1</strong></span><span>1 → ${size * size}</span></div><div class="schulte-grid" style="--size:${size}" aria-label="按顺序点击数字">${session.board.values.map((n) => `<button class="number-cell" data-number="${n}">${n}</button>`).join("")}</div>`;
+    `<div class="study-heading" aria-hidden="true"><span>ÉTUDE Nº 01</span><div class="paint-dabs"><i></i><i></i><i></i><i></i></div><span>ORDER & LIGHT</span></div><div class="next-number"><span>下一枚 <strong id="next-number" aria-live="polite">1</strong></span><span>1 → ${size * size}</span></div><div class="schulte-grid" style="--size:${size}" aria-label="按顺序点击数字">${session.board.values.map((n) => `<button class="number-cell" data-number="${n}"><span>${n}</span></button>`).join("")}</div><p class="study-caption" aria-hidden="true">序光 · 数字习作</p>`;
   $$(".number-cell").forEach((b) =>
     b.addEventListener("click", () => chooseNumber(b)),
   );
@@ -310,18 +312,7 @@ function setupInterference() {
   );
   newInterference(0);
 }
-function newInterference(now) {
-  resetQuestionFeedback();
-  const q = interference(session.prefs.direction);
-  session.trial = {
-    ...q,
-    start: now,
-    deadline: now + LEVELS[session.prefs.difficulty].wordMs,
-    closed: false,
-  };
-  session.nextAt = null;
-  const stimulus = $("#stimulus");
-  // A fresh child makes identical consecutive prompts visibly enter again.
+function interferenceContent(q) {
   const content = document.createElement("span");
   content.className = "stimulus-content";
   if (session.prefs.direction) {
@@ -330,17 +321,70 @@ function newInterference(now) {
       arrows[q.distractor].repeat(2) +
       arrows[q.answer] +
       arrows[q.distractor].repeat(2);
-    stimulus.removeAttribute("style");
   } else {
     content.textContent = COLORS[q.distractor].name;
-    stimulus.style.color = COLORS[q.answer].hex;
+    // Each layer keeps its own ink while two questions share the stage.
+    content.style.color = COLORS[q.answer].hex;
   }
+  return content;
+}
+function newInterference(now) {
+  resetQuestionFeedback();
+  const pending = session.pendingInterference;
+  const q = pending?.question || interference(session.prefs.direction);
+  session.pendingInterference = null;
+  session.trial = {
+    ...q,
+    start: now,
+    deadline: now + LEVELS[session.prefs.difficulty].wordMs,
+    closed: false,
+  };
+  session.nextAt = null;
+  const stimulus = $("#stimulus");
+  const content = pending?.content || interferenceContent(q);
+  content.className = "stimulus-content";
+  content.removeAttribute("aria-hidden");
+  stimulus.style.color = session.prefs.direction ? "" : COLORS[q.answer].hex;
   stimulus.replaceChildren(content);
   $$("[data-answer]").forEach((b) => (b.disabled = false));
 }
+function queueInterference(now) {
+  const owner = session;
+  const question = interference(session.prefs.direction);
+  const content = interferenceContent(question);
+  const stimulus = $("#stimulus");
+  const outgoing = stimulus.firstElementChild;
+  outgoing.classList.add("is-outgoing");
+  outgoing.setAttribute("aria-hidden", "true");
+  content.classList.add("is-incoming");
+  content.setAttribute("aria-hidden", "true");
+  session.pendingInterference = { question, content };
+  session.nextAt = now + WORD_HANDOFF_MS;
+  stimulus.style.setProperty("--handoff-duration", `${WORD_HANDOFF_MS}ms`);
+  stimulus.append(content);
+  // Animation completion avoids waiting for the 100 ms score/timer tick.
+  // The active clock remains authoritative across pauses and reduced motion.
+  content.addEventListener(
+    "animationend",
+    (event) => {
+      if (
+        event.animationName !== "word-enter" ||
+        session !== owner ||
+        session.pendingInterference?.content !== content
+      )
+        return;
+      const time = inputTime();
+      if (time !== null && time >= session.nextAt) newInterference(time);
+    },
+    { once: true },
+  );
+}
 function answerInterference(answer) {
   const now = inputTime();
-  if (now === null || session.trial.closed) return;
+  if (now === null) return;
+  if (session.pendingInterference && now >= session.nextAt)
+    newInterference(now);
+  if (session.trial.closed) return;
   if (now >= session.trial.deadline) {
     resolveInterference(null, now);
     return;
@@ -384,7 +428,7 @@ function resolveInterference(answer, now) {
       `${answer === null ? "这一题超时了" : "再慢一点也没关系"}，答案是${session.prefs.direction ? (q.answer ? "右" : "左") : COLORS[q.answer].name}。`,
     );
   }
-  session.nextAt = now + 400;
+  queueInterference(now);
   $$("[data-answer]").forEach((b) => (b.disabled = true));
   updateScore();
 }
@@ -504,13 +548,14 @@ function pauseSession(
     return;
   clock.pause(stoppedAt);
   session.paused = true;
+  $(".game-shell")?.classList.add("is-paused");
   $("#pause-session").innerHTML = `继续 ${icon("play")}`;
   const canvas = $("#game-canvas") || $(".break-stage");
   if (canvas) {
     canvas.style.position = "relative";
     const cover = document.createElement("div");
     cover.className = "paused-cover";
-    cover.innerHTML = `<h2>留一会儿白。</h2><p>${escapeHTML(reason)}</p><button class="primary" id="resume-session">继续练习 ${icon("play")}</button>`;
+    cover.innerHTML = `<div class="pause-art" aria-hidden="true"><img src="./assets/atelier-${session.prefs.palette}.webp" alt="" draggable="false" /></div><p class="pause-caption" aria-hidden="true">A MOMENT BETWEEN BRUSHSTROKES</p><h2>留一会儿白。</h2><p>${escapeHTML(reason)}</p><button class="primary" id="resume-session">继续练习 ${icon("play")}</button>`;
     canvas.append(cover);
     $("#resume-session").addEventListener("click", resumeSession);
     $("#resume-session").focus({ preventScroll: true });
@@ -519,6 +564,7 @@ function pauseSession(
 function resumeSession() {
   if (!session?.paused || document.hidden || $("#leave-dialog").open) return;
   $(".paused-cover")?.remove();
+  $(".game-shell")?.classList.remove("is-paused");
   session.paused = false;
   clock.start(performance.now());
   session.lastTick = performance.now();

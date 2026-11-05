@@ -844,6 +844,9 @@ input[type="time"] {
   max-width: 630px;
   margin: 0 auto 55px;
   position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 .game-heading {
   display: flex;
@@ -917,14 +920,30 @@ input[type="time"] {
   gap: 7px;
 }
 .number-cell {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   aspect-ratio: 1;
   border: 1px solid var(--line);
-  background: var(--paper);
+  background: var(--art-paper);
   font:
     26px Georgia,
     serif;
   padding: 0;
-  border-radius: 2px;
+  border-radius: 5% 3% 6% 4%;
+  box-shadow:
+    inset 0 1px 0 #fff9,
+    0 2px 2px #362a1e0a;
+}
+.number-cell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("./assets/brush-texture.webp") center / 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.65;
+  pointer-events: none;
 }
 .number-cell:hover {
   border-color: var(--blue);
@@ -956,10 +975,13 @@ input[type="time"] {
   margin-top: 15px;
 }
 .stimulus {
+  position: relative;
+  width: 100%;
   height: 180px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  --word-shift: clamp(68px, 18vw, 110px);
   font: 600 86px var(--serif);
   letter-spacing: 0.05em;
 }
@@ -1001,14 +1023,44 @@ input[type="time"] {
 .response-feedback[data-outcome] {
   color: var(--response-ink);
 }
-.stimulus-content,
 .target-symbol {
   animation: question-arrive 180ms cubic-bezier(0.32, 0.72, 0, 1);
 }
-.stimulus[data-response] .stimulus-content {
-  opacity: 0.45;
-  transform: scale(0.97);
-  animation: answer-settle 180ms ease-out;
+.stimulus-content {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.stimulus-content.is-outgoing {
+  opacity: 0;
+  animation: word-exit var(--handoff-duration) cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.stimulus-content.is-incoming {
+  animation: word-enter var(--handoff-duration) cubic-bezier(0.4, 0, 0.2, 1)
+    both;
+}
+.is-paused .stimulus-content {
+  animation-play-state: paused;
+}
+@keyframes word-exit {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(calc(var(--word-shift) * -1)) scale(0.88);
+  }
+}
+@keyframes word-enter {
+  from {
+    opacity: 0.15;
+    transform: translateX(var(--word-shift)) scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
 }
 @keyframes question-arrive {
   from {
@@ -1018,16 +1070,6 @@ input[type="time"] {
   to {
     opacity: 1;
     transform: scale(1);
-  }
-}
-@keyframes answer-settle {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0.45;
-    transform: scale(0.97);
   }
 }
 @keyframes answer-ring {
@@ -1224,7 +1266,46 @@ input[type="time"] {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  text-align: center;
+  isolation: isolate;
+  box-shadow:
+    inset 0 0 0 8px var(--panel),
+    inset 0 0 0 9px var(--line);
   z-index: 3;
+}
+.paused-cover::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  background: url("./assets/brush-texture.webp") center / cover;
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+  z-index: -1;
+  pointer-events: none;
+}
+.pause-art {
+  flex: none;
+  width: clamp(94px, 13vw, 134px);
+  padding: 6px 6px 12px;
+  margin-bottom: 16px;
+  background: var(--panel);
+  box-shadow:
+    2px 5px 0 #362a1e0c,
+    0 1px 4px #362a1e15;
+  transform: rotate(-5deg);
+}
+.pause-art img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1000 / 1078;
+  -webkit-user-drag: none;
+}
+.paused-cover .pause-caption {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+  margin: 0 0 12px;
 }
 .paused-cover h2 {
   font-size: 31px;
@@ -1235,6 +1316,84 @@ input[type="time"] {
 }
 .paused-cover .primary {
   margin-top: 15px;
+}
+
+/* The number study shares the atelier's painted paper, with even contrast
+   across every tile so the decoration gives no search hints. */
+.game-shell[data-game="schulte"] .game-canvas {
+  isolation: isolate;
+  box-shadow:
+    5px 7px 0 #362a1e06,
+    inset 0 0 0 6px var(--panel);
+  background: var(--panel);
+}
+.game-shell[data-game="schulte"] .game-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  z-index: -1;
+  background: url("./assets/brush-texture.webp") center / cover;
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+.study-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: min(100%, 430px);
+  margin: 1px 0 24px;
+  font:
+    8px Georgia,
+    serif;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.paint-dabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.paint-dabs i {
+  width: 29px;
+  height: 15px;
+  background-color: var(--blue);
+  background-image: url("./assets/brush-texture.webp");
+  background-blend-mode: multiply;
+  background-size: 100px;
+  clip-path: polygon(4% 9%, 89% 0, 100% 16%, 95% 88%, 15% 100%, 0 79%);
+  transform: rotate(-8deg);
+}
+.paint-dabs i:nth-child(2) {
+  background-color: var(--red);
+  transform: rotate(5deg);
+}
+.paint-dabs i:nth-child(3) {
+  background-color: var(--yellow);
+  transform: rotate(-4deg);
+}
+.paint-dabs i:nth-child(4) {
+  background-color: var(--green);
+  transform: rotate(9deg);
+}
+.game-shell[data-game="schulte"] .next-number strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 42px;
+  min-height: 38px;
+  color: var(--panel);
+  background: var(--blue) url("./assets/brush-texture.webp") center / 140px;
+  background-blend-mode: multiply;
+  border-radius: 4% 8% 5% 7%;
+  font-size: 24px;
+  vertical-align: middle;
+}
+.study-caption {
+  margin: 20px 0 0;
+  font: 12px var(--serif);
+  letter-spacing: 0.2em;
+  color: var(--muted);
 }
 .breath-art {
   width: 170px;
@@ -1694,6 +1853,9 @@ input[type="time"] {
   }
 }
 @media (max-width: 370px) {
+  .study-heading > span:last-child {
+    display: none;
+  }
   .wrap {
     width: calc(100% - 28px);
   }

@@ -7,7 +7,7 @@
 | atelier-paper.webp | 纸上晴日主画面 | 1000 × 1078 |
 | atelier-earth.webp | 陶土午后主画面 | 1000 × 1078 |
 | atelier-sea.webp | 海边来信主画面 | 1000 × 1078 |
-| brush-texture.webp | 三张预览卡和调色按钮的表面纹理 | 700 × 700 |
+| brush-texture.webp | 预览卡、调色按钮、序光棋盘和暂停页的表面纹理 | 700 × 700 |
 | icons.svg | 自绘线条图标，无 emoji 字体依赖 | SVG |
 
 主画面按主题加载。纹理通过 CSS multiply 叠加，保留卡片原有文字与布局。训练中的数字、文字墨色和目标图形保持清晰纯色。图像生成后仅用 cwebp 缩放和编码（主画面 quality 84，纹理 quality 82，method 6），无额外调色或绘制。保存路径均为本 README 同目录。

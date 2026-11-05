@@ -326,7 +326,8 @@ test("repeated colour prompts acknowledge each answer and visibly start a new qu
     await p.locator('[data-answer="0"]').getAttribute("data-response"),
     "solution",
   );
-  await p.clock.runFor(4400);
+  await p.clock.runFor(200);
+  await p.clock.runFor(4000);
   await response(p, "clock", /超时.*红/);
 });
 
@@ -393,4 +394,134 @@ test("shape feedback survives reduced motion and new targets cannot be answered 
   await p.locator("#resume-session").click();
   await p.clock.runFor(1200);
   assert.match(await p.locator("#response-feedback").textContent(), /漏按/);
+});
+
+test("word handoff overlaps different inks and settles without a blank stage", async (t) => {
+  const p = await fixture(t, { reducedMotion: "no-preference" });
+  await p.addStyleTag({
+    content: ".stimulus-content { animation-play-state: paused !important; }",
+  });
+  await p.evaluate(() => {
+    const draws = [0.25, 0, 0.75, 0]; // Blue blue, then yellow yellow.
+    Math.random = () => draws.shift() ?? 0;
+  });
+  await practice(p, "stroop");
+  await p.keyboard.press("2");
+  assert.equal(await p.locator(".is-outgoing").textContent(), "蓝");
+  assert.equal(await p.locator(".is-incoming").textContent(), "黄");
+  const midpoint = await p.locator(".stimulus-content").evaluateAll((nodes) =>
+    nodes.map((node) => {
+      const animation = node.getAnimations()[0];
+      animation.currentTime = 100;
+      const style = getComputedStyle(node);
+      return {
+        ink: style.color,
+        opacity: Number(style.opacity),
+        x: new DOMMatrix(style.transform).m41,
+      };
+    }),
+  );
+  assert.equal(midpoint[0].ink, "rgb(36, 79, 176)");
+  assert.equal(midpoint[1].ink, "rgb(137, 96, 0)");
+  assert.ok(midpoint.every((layer) => layer.opacity > 0 && layer.opacity < 1));
+  assert.ok(midpoint[0].x < 0 && midpoint[1].x > 0);
+  await p.keyboard.press("2");
+  assert.match(
+    await p.locator("#round-score").textContent(),
+    /正确 1 · 错误 0/,
+  );
+  await p.clock.runFor(200);
+  assert.equal(await p.locator(".stimulus-content").count(), 1);
+  assert.equal(await p.locator("#stimulus").textContent(), "黄");
+  assert.equal(await p.locator("#trial-count").textContent(), "第 2 题");
+  assert.equal(await p.locator('[data-answer="3"]').isEnabled(), true);
+  await p.keyboard.press("4");
+  assert.match(
+    await p.locator("#round-score").textContent(),
+    /正确 2 · 错误 0/,
+  );
+});
+
+test("pausing mid-handoff freezes progress and leaving discards the pending question", async (t) => {
+  const p = await fixture(t, { reducedMotion: "no-preference" });
+  await p.evaluate(() => {
+    Math.random = () => 0;
+  });
+  await practice(p, "stroop");
+  await p.keyboard.press("1");
+  await p.keyboard.press("p");
+  assert.equal(
+    await p
+      .locator(".is-incoming")
+      .evaluate((el) => getComputedStyle(el).animationPlayState),
+    "paused",
+  );
+  const timer = await p.locator("#round-timer").textContent();
+  await p.clock.runFor(5000);
+  assert.equal(await p.locator("#round-timer").textContent(), timer);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 1 题");
+  await p.locator("#resume-session").click();
+  await p.clock.runFor(200);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 2 题");
+  await p.keyboard.press("1");
+  await p.locator("#leave-session").click();
+  await p.locator("#confirm-leave").click();
+  await practice(p, "stroop");
+  await p.clock.runFor(300);
+  assert.equal(await p.locator("#trial-count").textContent(), "第 1 题");
+  assert.match(
+    await p.locator("#round-score").textContent(),
+    /正确 0 · 错误 0 · 漏答 0/,
+  );
+});
+
+test("reduced motion shows one clear ink and gives the next question its full response window", async (t) => {
+  const p = await fixture(t);
+  await p.evaluate(() => {
+    Math.random = () => 0;
+  });
+  await practice(p, "stroop");
+  await p.keyboard.press("1");
+  assert.equal(
+    await p
+      .locator(".is-outgoing")
+      .evaluate((el) => getComputedStyle(el).opacity),
+    "0",
+  );
+  const incoming = await p.locator(".is-incoming").evaluate((el) => {
+    const s = getComputedStyle(el);
+    return [s.opacity, s.transform, s.animationName];
+  });
+  assert.deepEqual(incoming, ["1", "none", "none"]);
+  await p.clock.runFor(100);
+  await p.keyboard.press("1");
+  assert.match(await p.locator("#round-score").textContent(), /正确 1/);
+  await p.clock.runFor(100);
+  await p.clock.runFor(3900);
+  assert.match(await p.locator("#round-score").textContent(), /漏答 0/);
+  await p.clock.runFor(100);
+  assert.match(await p.locator("#round-score").textContent(), /漏答 1/);
+});
+
+test("game text cannot be selected by repeated clicks while home copy remains selectable", async (t) => {
+  const p = await fixture(t);
+  for (const game of ["schulte", "stroop", "gonogo"]) {
+    await practice(p, game);
+    await p.locator(".game-heading h1").dblclick();
+    assert.equal(await p.evaluate(() => getSelection().toString()), "");
+    assert.equal(
+      await p
+        .locator(".game-canvas")
+        .evaluate((el) => getComputedStyle(el).userSelect),
+      "none",
+    );
+    await p.locator("#leave-session").click();
+    await p.locator("#confirm-leave").click();
+  }
+  assert.notEqual(
+    await p
+      .locator(".hero-description")
+      .evaluate((el) => getComputedStyle(el).userSelect),
+    "none",
+  );
 });
