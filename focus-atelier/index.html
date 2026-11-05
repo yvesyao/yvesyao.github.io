@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="zh-CN" data-palette="paper">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f4f0e6" />
+    <meta
+      name="description"
+      content="一隅，一间给注意力的小画室。每天 5–10 分钟，舒尔特方格、色词干扰与点按停手。无广告，无需登录。"
+    />
+    <title>一隅 · 专注小画室</title>
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./app.mjs"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <header class="site-header wrap">
+      <a class="brand" href="./" aria-label="一隅首页"
+        ><img src="./icon.svg" width="36" height="36" alt="" /><span
+          >一隅<span class="brand-sub">FOCUS ATELIER</span></span
+        ></a
+      >
+      <nav id="home-nav" aria-label="主导航">
+        <a href="#collection">练习集</a
+        ><button data-dialog="history-dialog">我的足迹</button
+        ><button class="reminder-link" data-dialog="reminder-dialog">
+          <span aria-hidden="true">◷</span> 留个提醒
+        </button>
+      </nav>
+      <span class="header-note" id="session-note" hidden
+        >ONE THING AT A TIME.</span
+      >
+    </header>
+    <main id="main" class="wrap">
+      <section id="home-view">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">
+              <span class="tiny-star" aria-hidden="true">✳</span> A LITTLE
+              SPACE FOR YOUR MIND
+            </p>
+            <h1>
+              把注意力，<br />还给<span class="ink-word"
+                >眼前<svg viewBox="0 0 200 18" aria-hidden="true">
+                  <path
+                    d="M3 11 Q90 0 196 9 M28 16 Q103 7 170 12"
+                  /></svg></span
+              >。
+            </h1>
+            <p class="hero-description">
+              从纷杂里，轻轻抽身。<br />用几分钟的小练习，做一次专心的尝试。
+            </p>
+            <div class="daily-controls">
+              <div class="daily-label">
+                <span id="today-label">今天的小小留白</span
+                ><span class="edition">DAILY PRACTICE</span>
+              </div>
+              <div class="duration-row">
+                <div
+                  class="segmented"
+                  id="durations"
+                  role="group"
+                  aria-label="每日练习时长"
+                >
+                  <button data-minutes="5" aria-pressed="false">5 分钟</button
+                  ><button data-minutes="7" aria-pressed="true">7 分钟</button
+                  ><button data-minutes="10" aria-pressed="false">
+                    10 分钟
+                  </button>
+                </div>
+                <button class="text-button" data-dialog="settings-dialog">
+                  调整难度 <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+              <button class="primary start-daily" id="start-daily">
+                <span>开始今天的练习</span
+                ><span class="button-arrow" aria-hidden="true">↗</span>
+              </button>
+              <p class="micro-copy">三个小游戏 · 两次短休息 · 到点就收笔</p>
+            </div>
+          </div>
+          <figure class="hero-art">
+            <div class="print-frame">
+              <svg
+                class="paper-art"
+                viewBox="0 0 500 540"
+                role="img"
+                aria-labelledby="art-title"
+              >
+                <title id="art-title">
+                  原创剪纸构成：群青色拱门，橘红太阳和金色枝叶
+                </title>
+                <defs>
+                  <pattern
+                    id="lines"
+                    width="18"
+                    height="18"
+                    patternUnits="userSpaceOnUse"
+                    patternTransform="rotate(-12)"
+                  >
+                    <path
+                      d="M0 0V18"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      opacity=".22"
+                    />
+                  </pattern>
+                </defs>
+                <rect width="500" height="540" fill="var(--art-paper)" />
+                <path
+                  d="M32 30 L475 38 L468 509 L25 502Z"
+                  fill="var(--art-light)"
+                />
+                <path
+                  class="art-arch"
+                  d="M99 445 L97 229 C85 50 389 49 389 226 L396 446Z"
+                  fill="var(--blue)"
+                />
+                <path
+                  d="M173 445 L173 240 C164 131 313 130 314 239 L317 445Z"
+                  fill="var(--art-paper)"
+                />
+                <path
+                  d="M100 442 L396 444 L429 484 L63 482Z"
+                  fill="var(--blue)"
+                />
+                <path
+                  d="M62 483 L429 484 L429 499 L61 497Z"
+                  fill="var(--ink)"
+                  opacity=".85"
+                />
+                <circle
+                  class="art-sun"
+                  cx="359"
+                  cy="119"
+                  r="63"
+                  fill="var(--red)"
+                />
+                <path
+                  d="M359 44V27 M411 67L426 52 M435 119H455 M410 170L424 186"
+                  fill="none"
+                  stroke="var(--red)"
+                  stroke-width="3"
+                />
+                <path
+                  d="M102 358 C32 333 10 279 57 275 C92 270 101 306 104 323 C76 257 92 201 126 218 C150 233 123 282 117 313 C136 255 182 254 184 282 C187 313 143 330 117 339 C165 322 188 350 168 366 C149 384 126 370 112 364 L122 421 L104 421Z"
+                  fill="var(--yellow)"
+                />
+                <path
+                  d="M350 395 C362 363 398 344 411 367 C422 389 384 405 363 407 C400 404 422 424 405 439 C387 451 365 428 351 417 L334 449 L325 440Z"
+                  fill="var(--green)"
+                />
+                <ellipse
+                  cx="244"
+                  cy="407"
+                  rx="47"
+                  ry="12"
+                  fill="var(--ink)"
+                  opacity=".12"
+                />
+                <path
+                  d="M212 344 Q244 336 275 344 L264 401 Q246 415 226 401Z"
+                  fill="var(--red)"
+                />
+                <ellipse cx="244" cy="344" rx="32" ry="9" fill="var(--ink)" />
+                <path
+                  d="M245 340 C257 289 229 272 247 231"
+                  fill="none"
+                  stroke="var(--green)"
+                  stroke-width="5"
+                />
+                <path
+                  d="M247 302 C278 304 284 279 283 266 C256 265 247 285 247 302 M245 277 C217 277 209 249 213 239 C241 239 245 259 245 277"
+                  fill="var(--green)"
+                />
+                <path
+                  d="M250 239 L228 223 L238 210 L226 190 L245 187 L251 164 L267 186 L286 185 L283 206 L296 217 L275 228 L269 248Z"
+                  fill="var(--yellow)"
+                />
+                <circle cx="259" cy="209" r="10" fill="var(--red)" />
+                <path d="M46 102 L61 79 L77 101 L61 123Z" fill="var(--green)" />
+                <circle cx="435" cy="280" r="17" fill="var(--red)" />
+                <rect
+                  x="32"
+                  y="30"
+                  width="75"
+                  height="180"
+                  fill="url(#lines)"
+                  color="var(--ink)"
+                />
+                <path
+                  d="M169 459 Q234 450 324 462"
+                  stroke="var(--art-paper)"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
+              <span class="print-number">ÉTUDE Nº 01</span
+              ><span class="print-signature">a quiet kind of focus.</span>
+            </div>
+            <figcaption>
+              <span
+                ><span class="caption-dot"></span> 今日调色盘
+                <b id="palette-label">纸上晴日</b></span
+              >
+              <div class="palette-picks" role="group" aria-label="界面配色">
+                <button
+                  data-palette="paper"
+                  class="palette paper"
+                  aria-label="纸上晴日配色"
+                  aria-pressed="true"
+                ></button
+                ><button
+                  data-palette="earth"
+                  class="palette earth"
+                  aria-label="陶土午后配色"
+                  aria-pressed="false"
+                ></button
+                ><button
+                  data-palette="sea"
+                  class="palette sea"
+                  aria-label="海边来信配色"
+                  aria-pressed="false"
+                ></button>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+        <section
+          class="collection"
+          id="collection"
+          aria-labelledby="collection-heading"
+        >
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">THE COLLECTION / 01—03</p>
+              <h2 id="collection-heading">三种方式，回到此刻。</h2>
+            </div>
+            <span class="section-note">也可以从一分钟试玩开始 ↙</span>
+          </div>
+          <div class="game-collection">
+            <button class="game-card" data-practice="schulte">
+              <div class="card-art grid-art" aria-hidden="true">
+                <span>08</span><span>01</span><span>06</span><span>03</span
+                ><span class="active-number">05</span><span>07</span
+                ><span>04</span><span>09</span><span>02</span>
+              </div>
+              <div class="card-title">
+                <h3>序光</h3>
+                <span>01 / SEARCH</span>
+              </div>
+              <p>舒尔特方格 · 在散落的数字间，找回顺序。</p>
+              <span class="try-link"
+                >试玩 1 分钟 <span aria-hidden="true">↗</span></span
+              >
+            </button>
+            <button class="game-card" data-practice="stroop">
+              <div class="card-art word-art" aria-hidden="true">
+                <span>红</span><span>蓝</span><i>see the colour.</i>
+              </div>
+              <div class="card-title">
+                <h3>异色</h3>
+                <span>02 / FILTER</span>
+              </div>
+              <p>色词干扰 · 看见颜色，放下字义。</p>
+              <span class="try-link"
+                >试玩 1 分钟 <span aria-hidden="true">↗</span></span
+              >
+            </button>
+            <button class="game-card" data-practice="gonogo">
+              <div class="card-art shape-art" aria-hidden="true">
+                <span class="shape-circle"></span
+                ><span class="shape-square"></span><i>pause is a choice.</i>
+              </div>
+              <div class="card-title">
+                <h3>留白</h3>
+                <span>03 / PAUSE</span>
+              </div>
+              <p>点按与停手 · 有时回应，有时等一等。</p>
+              <span class="try-link"
+                >试玩 1 分钟 <span aria-hidden="true">↗</span></span
+              >
+            </button>
+          </div>
+        </section>
+        <section class="ritual-strip">
+          <div class="ritual-symbol" aria-hidden="true">✳</div>
+          <div>
+            <h2>少一点用力，多一点回来。</h2>
+            <p>不必刷新纪录。今天愿意专心几分钟，就很好。</p>
+          </div>
+          <button class="text-button" data-dialog="about-dialog">
+            这些练习有什么用？ ↗
+          </button>
+        </section>
+      </section>
+
+      <section id="session-view" hidden aria-label="专注练习">
+        <div class="session-top">
+          <button class="text-button" id="leave-session">← 离开练习</button
+          ><span id="session-kind" class="eyebrow"></span
+          ><button class="text-button" id="pause-session" hidden>暂停 Ⅱ</button>
+        </div>
+        <div class="session-path" id="session-path" aria-label="练习进度"></div>
+        <div id="stage"></div>
+      </section>
+      <p id="storage-warning" class="storage-warning" hidden role="status">
+        浏览器未允许保存数据，本次仍可练习；关闭页面后记录可能丢失。
+      </p>
+    </main>
+    <footer class="site-footer wrap" id="site-footer">
+      <span>一隅 <i>·</i> 给注意力，一小块空白。</span>
+      <div>
+        <button data-dialog="about-dialog">关于练习</button
+        ><a
+          href="https://github.com/yvesyao/yvesyao.github.io/tree/master/focus-atelier"
+          target="_blank"
+          rel="noreferrer"
+          >开源代码 ↗</a
+        ><span>无广告 · 记录仅在本机</span>
+      </div>
+    </footer>
+
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <form method="dialog">
+        <button class="close-dialog" aria-label="关闭">×</button>
+      </form>
+      <p class="eyebrow">YOUR OWN PACE</p>
+      <h2 id="settings-title">找到舒服的节奏。</h2>
+      <p>先求准确，再慢慢变快。难度只在下一次练习生效。</p>
+      <label for="difficulty">练习难度</label
+      ><select id="difficulty">
+        <option value="gentle">舒缓 · 4 × 4 方格 / 更长反应时间</option>
+        <option value="normal">标准 · 5 × 5 方格 / 适中节奏</option>
+        <option value="bold">挑战 · 6 × 6 方格 / 较快节奏</option></select
+      ><label class="check-row"
+        ><input type="checkbox" id="direction-mode" /><span
+          >用方向代替辨色<small
+            >选择中央箭头的方向，忽略两旁箭头。适合不便分辨颜色时使用。</small
+          ></span
+        ></label
+      ><button class="primary full" id="save-settings">保存设置</button>
+    </dialog>
+    <dialog id="reminder-dialog" aria-labelledby="reminder-title">
+      <form method="dialog">
+        <button class="close-dialog" aria-label="关闭">×</button>
+      </form>
+      <p class="eyebrow">MAKE A LITTLE APPOINTMENT</p>
+      <h2 id="reminder-title">和自己，约几分钟。</h2>
+      <p>把每天的小练习放进系统日历。关闭网页后，也能由日历提醒你。</p>
+      <label for="reminder-time">每天，当地时间</label
+      ><input type="time" id="reminder-time" value="15:00" required /><button
+        class="primary full"
+        id="download-calendar"
+      >
+        下载每日提醒 · 添加到日历 ↗
+      </button>
+      <p class="hint">
+        下载后，请打开文件并确认导入日历，再检查日历通知已开启。网页无法确认是否导入成功。更改或取消提醒请在日历中操作；重复导入可能产生重复事件。
+      </p>
+      <div class="dialog-divider"></div>
+      <label class="check-row"
+        ><input type="checkbox" id="browser-reminder" /><span
+          >同时使用网页通知<small
+            >仅在页面保持打开时尝试提醒。浏览器后台节流或电脑休眠可能使它延迟。</small
+          ></span
+        ></label
+      >
+      <p id="reminder-status" class="hint" role="status"></p>
+    </dialog>
+    <dialog id="history-dialog" aria-labelledby="history-title">
+      <form method="dialog">
+        <button class="close-dialog" aria-label="关闭">×</button>
+      </form>
+      <p class="eyebrow">SMALL MOMENTS, KEPT</p>
+      <h2 id="history-title">专心过的日子。</h2>
+      <p>只和自己相处，不和别人比较。</p>
+      <div id="history-content"></div>
+      <button class="text-button danger" id="clear-history">
+        清除本机练习记录
+      </button>
+      <p class="hint">
+        记录保存在当前浏览器。更换设备或清理浏览器数据后，不会同步保留。
+      </p>
+    </dialog>
+    <dialog id="about-dialog" aria-labelledby="about-title">
+      <form method="dialog">
+        <button class="close-dialog" aria-label="关闭">×</button>
+      </form>
+      <p class="eyebrow">A PRACTICE, NOT A PROMISE</p>
+      <h2 id="about-title">练习专心，也练习停下。</h2>
+      <p>
+        舒尔特方格、色词干扰和点按／停手，分别让你尝试视觉搜索、排除干扰和保持注意。这些游戏会记录表现，但不评判你的能力。
+      </p>
+      <p>
+        研究通常发现，人会更擅长练过的任务；这种进步能否迁移到日常工作，证据仍有限。一隅不是诊断或治疗工具，也不承诺提升智力。
+      </p>
+      <p>
+        每天 5–10
+        分钟是方便坚持的设计选择，不是医学处方。计时包含两次短休息，不含读规则与暂停；觉得疲劳时，随时结束。
+      </p>
+      <p>
+        色彩与剪纸构成来自绘画语言的启发，图形为原创。游戏中的颜色固定，不随界面配色改变。
+      </p>
+      <div class="source-links">
+        <a
+          href="https://www.psychologicalscience.org/journals/pspi/1529100616661983/"
+          target="_blank"
+          rel="noreferrer"
+          >脑训练研究综述 ↗</a
+        ><a
+          href="https://us.psytoolkit.org/experiment-library/stroop.html"
+          target="_blank"
+          rel="noreferrer"
+          >Stroop 任务原理 ↗</a
+        ><a
+          href="https://us.psytoolkit.org/experiment-library/sart.html"
+          target="_blank"
+          rel="noreferrer"
+          >SART 任务原理 ↗</a
+        ><a
+          href="https://github.com/yvesyao/yvesyao.github.io/blob/master/focus-atelier/RESEARCH.md"
+          target="_blank"
+          rel="noreferrer"
+          >完整调研与设计说明 ↗</a
+        >
+      </div>
+    </dialog>
+    <dialog id="leave-dialog" aria-labelledby="leave-title">
+      <p class="eyebrow">IT'S OKAY TO PAUSE</p>
+      <h2 id="leave-title">今天先到这里？</h2>
+      <p>这一轮还未完成，离开后不计入完成记录。也可以继续慢慢来。</p>
+      <div class="dialog-actions">
+        <button class="secondary" id="keep-playing">继续练习</button
+        ><button class="primary" id="confirm-leave">结束并返回</button>
+      </div>
+    </dialog>
+    <div id="toast" class="toast" role="status" hidden></div>
+    <noscript
+      ><p class="wrap">
+        小游戏需要 JavaScript，请在浏览器中启用后刷新。
+      </p></noscript
+    >
+  </body>
+</html>
