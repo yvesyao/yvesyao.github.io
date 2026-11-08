@@ -31,9 +31,18 @@
           留个提醒
         </button>
       </nav>
-      <span class="header-note" id="session-note" hidden
-        >ONE THING AT A TIME.</span
-      >
+      <span id="session-note" hidden>
+        <button
+          class="music-entry"
+          data-dialog="music-dialog"
+          aria-label="配乐设置"
+        >
+          <svg class="ui-icon" aria-hidden="true">
+            <use href="./assets/icons.svg#sound"></use>
+          </svg>
+          <span data-music-label>配乐 · 随练习开始</span>
+        </button>
+      </span>
     </header>
     <main id="main" class="wrap">
       <section id="home-view">
@@ -83,6 +92,17 @@
                 </svg>
               </button>
               <p class="micro-copy">三个小游戏 · 两次短休息 · 到点就收笔</p>
+              <button
+                class="music-entry home-music"
+                data-dialog="music-dialog"
+                aria-label="配乐设置与试听"
+              >
+                <svg class="ui-icon" aria-hidden="true">
+                  <use href="./assets/icons.svg#sound"></use>
+                </svg>
+                <span data-music-label>配乐 · 随练习开始</span>
+                <span class="music-entry-detail">试听与音量</span>
+              </button>
             </div>
           </div>
           <figure class="hero-art">
@@ -373,6 +393,57 @@
             <use href="./assets/icons.svg#arrow-up-right"></use></svg
         ></a>
       </div>
+    </dialog>
+    <dialog id="music-dialog" aria-labelledby="music-title">
+      <form method="dialog">
+        <button class="close-dialog" aria-label="关闭配乐设置">
+          <svg class="ui-icon" aria-hidden="true">
+            <use href="./assets/icons.svg#close"></use>
+          </svg>
+        </button>
+      </form>
+      <p class="eyebrow">A QUIET ACCOMPANIMENT</p>
+      <div class="music-art" aria-hidden="true">
+        <span class="music-disc"><i></i></span
+        ><span class="music-art-caption"
+          >PAPERLIGHT<br />ORIGINAL SCORE / 01</span
+        >
+      </div>
+      <h2 id="music-title">纸上微光。</h2>
+      <p>
+        柔和的键音，慢慢展开的和声。<br />一点轻盈的流动，陪你把注意力留在眼前。
+      </p>
+      <label class="check-row"
+        ><input type="checkbox" id="music-enabled" checked /><span
+          >练习时播放配乐<small
+            >开始时渐入，休息时轻一些；暂停、切走页面时安静下来，完成后自然收尾。</small
+          ></span
+        ></label
+      >
+      <label class="music-volume-label" for="music-volume"
+        >配乐音量
+        <output id="music-volume-value" for="music-volume">40%</output></label
+      >
+      <input
+        type="range"
+        id="music-volume"
+        min="0"
+        max="100"
+        step="1"
+        value="40"
+      />
+      <div class="music-volume-ends" aria-hidden="true">
+        <span>安静</span><span>清晰</span>
+      </div>
+      <button class="secondary full" id="music-preview" aria-pressed="false">
+        试听 20 秒
+      </button>
+      <p id="music-status" class="hint" role="status">
+        随练习开始播放。也可以先听一小段。
+      </p>
+      <p class="hint music-footnote">
+        无歌词 · 原创合成配乐<br />音乐是陪伴，音量以不盖过思考为宜；喜欢安静时，随时关掉。
+      </p>
     </dialog>
     <dialog id="leave-dialog" aria-labelledby="leave-title">
       <p class="eyebrow">IT'S OKAY TO PAUSE</p>

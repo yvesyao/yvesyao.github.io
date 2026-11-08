@@ -5,6 +5,8 @@ export const DEFAULTS = Object.freeze({
   direction: false,
   reminderTime: "15:00",
   browserReminder: false,
+  musicEnabled: true,
+  musicVolume: 40,
 });
 export const LEVELS = Object.freeze({
   gentle: { size: 4, wordMs: 5500, shapeMs: 1500 },
@@ -99,6 +101,10 @@ export function normalize(raw) {
     direction: p.direction === true,
     reminderTime: validTime(p.reminderTime) ? p.reminderTime : "15:00",
     browserReminder: p.browserReminder === true,
+    musicEnabled: typeof p.musicEnabled === "boolean" ? p.musicEnabled : true,
+    musicVolume: Number.isFinite(p.musicVolume)
+      ? Math.max(0, Math.min(100, Math.round(p.musicVolume)))
+      : 40,
   };
   const history = (Array.isArray(raw?.history) ? raw.history : [])
     .filter(

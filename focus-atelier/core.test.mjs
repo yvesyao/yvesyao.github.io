@@ -149,3 +149,29 @@ test("browser reminder is opt-in, once per local day, with a bounded late window
   s.prefs.browserReminder = false;
   assert.equal(reminderDue(s, now), false);
 });
+
+test("music preferences migrate old storage and validate volume and opt-out", () => {
+  assert.equal(normalize({}).prefs.musicEnabled, true);
+  assert.equal(normalize({}).prefs.musicVolume, 40);
+  assert.equal(
+    normalize({ prefs: { musicEnabled: false } }).prefs.musicEnabled,
+    false,
+  );
+  for (const invalid of [null, "90", NaN, Infinity, {}]) {
+    assert.equal(
+      normalize({ prefs: { musicVolume: invalid } }).prefs.musicVolume,
+      40,
+    );
+  }
+  for (const [input, expected] of [
+    [-1, 0],
+    [200, 100],
+    [42.6, 43],
+    [0, 0],
+  ]) {
+    assert.equal(
+      normalize({ prefs: { musicVolume: input } }).prefs.musicVolume,
+      expected,
+    );
+  }
+});

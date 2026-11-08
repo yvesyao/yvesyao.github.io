@@ -14,6 +14,7 @@ import {
   calendar,
   reminderDue,
 } from "./core.mjs";
+import { PracticeMusic } from "./music.mjs";
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -27,6 +28,12 @@ const loaded = loadState(storage);
 let state = loaded.state;
 let session = null;
 let toastTimer;
+let previewTimer;
+const music = new PracticeMusic({
+  url: new URL("./assets/paperlight.mp3", import.meta.url),
+  onChange: renderMusic,
+  onInterrupt: () => pauseSession("声音被系统打断了，准备好后继续练习。"),
+});
 const clock = new ActiveClock();
 const WORD_HANDOFF_MS = 200;
 // All icon names are internal constants; game stimuli keep their own semantics.
@@ -83,6 +90,65 @@ const mean = (numbers) =>
 function persist() {
   $("#storage-warning").hidden = saveState(storage, state);
 }
+function renderMusic() {
+  const enabled = state.prefs.musicEnabled;
+  const quiet = !enabled || state.prefs.musicVolume === 0;
+  const labels = {
+    playing: "配乐 · 纸上微光",
+    loading: "配乐 · 准备中",
+    blocked: "配乐 · 点此重试",
+  };
+  $$("[data-music-label]").forEach((el) => {
+    el.textContent = quiet
+      ? "配乐 · 已关闭"
+      : labels[music.status] ||
+        (session && session.phase !== "summary"
+          ? "配乐 · 等待继续"
+          : "配乐 · 随练习开始");
+  });
+  $$(".music-entry").forEach((el) => {
+    el.dataset.playing = String(music.status === "playing");
+  });
+  $("#music-enabled").checked = enabled;
+  $("#music-volume").value = state.prefs.musicVolume;
+  $("#music-volume-value").textContent = `${state.prefs.musicVolume}%`;
+  const previewing = music.mode === "preview" && music.status !== "blocked";
+  $("#music-preview").disabled = quiet;
+  $("#music-preview").setAttribute("aria-pressed", String(previewing));
+  $("#music-preview").textContent = previewing
+    ? "结束试听"
+    : music.status === "blocked"
+      ? "重新试听"
+      : "试听 20 秒";
+  $("#music-status").textContent = quiet
+    ? "已静音。偏好会留在这个浏览器里。"
+    : {
+        loading: "音乐正在准备，练习无需等待。",
+        blocked: "音乐暂未播放。可以点试听重试，练习仍可继续。",
+        playing: previewing
+          ? "试听中，20 秒后轻轻收尾。"
+          : "纸上微光，正在陪你练习。",
+      }[music.status] ||
+      (session && session.phase !== "summary"
+        ? "准备好后继续练习，音乐会一起回来。"
+        : "随练习开始播放。也可以先听一小段。");
+}
+function practiceSound(gesture = false) {
+  clearTimeout(previewTimer);
+  const active =
+    session &&
+    !session.paused &&
+    !document.hidden &&
+    ["intro", "play", "break", "between"].includes(session.phase);
+  music.setMode(
+    active ? (session.phase === "play" ? "practice" : "soft") : "idle",
+    { gesture },
+  );
+}
+function stopPreview(immediate = false) {
+  clearTimeout(previewTimer);
+  if (music.mode === "preview") music.setMode("idle", { immediate });
+}
 function toast(message) {
   clearTimeout(toastTimer);
   $("#toast").textContent = message;
@@ -128,6 +194,7 @@ function renderHome() {
     ? "再练一次，也随心"
     : "开始今天的练习";
   setPalette(state.prefs.palette);
+  renderMusic();
 }
 function currentGame() {
   return session.queue[session.index];
@@ -198,6 +265,7 @@ function renderIntro() {
     renderIntro();
   });
   $(".intro h1").focus({ preventScroll: true });
+  practiceSound(true);
 }
 function beginRound() {
   const id = currentGame(),
@@ -235,6 +303,7 @@ function beginRound() {
   else if (id === "stroop") setupInterference();
   else setupShapes();
   updateScore();
+  practiceSound(true);
 }
 function feedback(text) {
   if ($("#game-feedback")) $("#game-feedback").textContent = text;
@@ -561,6 +630,7 @@ function finishRound() {
   clock.start(performance.now());
   session.lastTick = performance.now();
   const next = GAME[session.queue[session.index + 1]];
+  practiceSound();
   $("#stage").innerHTML =
     `<div class="break-stage"><p class="eyebrow">A LITTLE SPACE BETWEEN</p><h1>目光，去远处走走。</h1><p>放松手指，看看窗外。下一段是「${next.name}」。</p><div class="breath-art" aria-hidden="true"><span id="break-timer">15</span></div><p id="break-status">休息 15 秒，再继续。</p><button class="primary" id="continue-session" hidden>进入下一段 ${icon("arrow-up-right")}</button></div>`;
   $("#continue-session").addEventListener("click", () => {
@@ -572,6 +642,8 @@ function pauseSession(
   reason = "练习已暂停。准备好再回来。",
   stoppedAt = performance.now(),
 ) {
+  clearTimeout(previewTimer);
+  music.setMode("paused");
   if (!session || !["play", "break"].includes(session.phase) || session.paused)
     return;
   clock.pause(stoppedAt);
@@ -597,9 +669,11 @@ function resumeSession() {
   clock.start(performance.now());
   session.lastTick = performance.now();
   $("#pause-session").innerHTML = `暂停 ${icon("pause")}`;
+  practiceSound(true);
 }
 function finishSession() {
   session.phase = "summary";
+  music.setMode("ending");
   session.paused = false;
   clock.reset();
   state.history.push({
@@ -691,6 +765,8 @@ function tick() {
   }
 }
 function goHome() {
+  stopPreview();
+  music.setMode("idle");
   clock.reset();
   session = null;
   $("#leave-dialog").close();
@@ -718,6 +794,10 @@ function renderHistory() {
   delete $("#clear-history").dataset.confirm;
 }
 function openDialog(id) {
+  if (id === "music-dialog") {
+    if (session && session.phase !== "summary") pauseSession();
+    renderMusic();
+  }
   if (id === "settings-dialog") {
     $("#difficulty").value = state.prefs.difficulty;
     $("#direction-mode").checked = state.prefs.direction;
@@ -871,6 +951,35 @@ $("#keep-playing").addEventListener("click", () => {
   resumeSession();
 });
 $("#confirm-leave").addEventListener("click", goHome);
+$("#music-enabled").addEventListener("change", () => {
+  const enabled = $("#music-enabled").checked;
+  stopPreview();
+  state.prefs.musicEnabled = enabled;
+  music.configure({
+    enabled: state.prefs.musicEnabled,
+    volume: state.prefs.musicVolume,
+  });
+  persist();
+});
+$("#music-volume").addEventListener("input", () => {
+  state.prefs.musicVolume = Number($("#music-volume").value);
+  if (state.prefs.musicVolume === 0) stopPreview();
+  music.configure({
+    enabled: state.prefs.musicEnabled,
+    volume: state.prefs.musicVolume,
+  });
+  persist();
+});
+$("#music-preview").addEventListener("click", () => {
+  if (music.mode === "preview" && music.status !== "blocked") {
+    stopPreview();
+    return;
+  }
+  music.setMode("preview", { gesture: true });
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => music.setMode("ending"), 20000);
+});
+$("#music-dialog").addEventListener("close", () => stopPreview());
 $("#leave-dialog").addEventListener("cancel", () => {
   setTimeout(resumeSession, 0);
 });
@@ -889,7 +998,10 @@ document.addEventListener("visibilitychange", () => {
   if (document.hidden) pauseSession("你刚刚切走了页面，计时已暂停。");
   else if (!session) renderHome();
 });
-window.addEventListener("pagehide", () => pauseSession());
+window.addEventListener("pagehide", () => {
+  pauseSession();
+  music.setMode("paused", { immediate: true });
+});
 window.addEventListener("beforeunload", (event) => {
   if (session && !["summary", "intro"].includes(session.phase)) {
     event.preventDefault();
@@ -933,6 +1045,10 @@ window.addEventListener("storage", (event) => {
   const incoming = loadState(storage);
   if (!session) {
     state = incoming.state;
+    music.configure({
+      enabled: state.prefs.musicEnabled,
+      volume: state.prefs.musicVolume,
+    });
     renderHome();
   } else {
     state.history = incoming.state.history;
@@ -940,6 +1056,10 @@ window.addEventListener("storage", (event) => {
   }
 });
 $("#storage-warning").hidden = loaded.available;
+music.configure({
+  enabled: state.prefs.musicEnabled,
+  volume: state.prefs.musicVolume,
+});
 renderHome();
 setInterval(tick, 100);
 setInterval(checkReminder, 15000);
